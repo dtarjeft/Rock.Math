@@ -7,8 +7,8 @@
     <ProjectGuid>{40B7A008-2B7D-4B53-AEA0-85CA1367695F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rock.Framework.Math</RootNamespace>
-    <AssemblyName>Rock.Framework.Math</AssemblyName>
+    <RootNamespace>Rock.Math</RootNamespace>
+    <AssemblyName>Rock.Math</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
