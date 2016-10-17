@@ -199,7 +199,7 @@
         {
             var found = false;
 
-            foreach (var piece in function.Pieces)
+            foreach (var piece in function)
             {
                 if (upperBound.ApproximatelyEquals(piece.UpperBound))
                 {
@@ -221,26 +221,26 @@
 
         public void VerifyMaxValuePiece(PiecewiseFunction function, double expectedValue, double lowerBound, bool includeLowerBound)
         {
-            Assert.Greater(function.Pieces.Count, 1);
-            Assert.AreEqual(lowerBound, function.Pieces[function.Pieces.Count - 2].UpperBound);
-            Assert.AreNotEqual(includeLowerBound, function.Pieces[function.Pieces.Count - 2].IncludeUpperBound);
+            Assert.Greater(function.Count, 1);
+            Assert.AreEqual(lowerBound, function[function.Count - 2].UpperBound);
+            Assert.AreNotEqual(includeLowerBound, function[function.Count - 2].IncludeUpperBound);
 
             this.VerifyMaxValuePiece(function, expectedValue);
         }
 
         public void VerifyMaxValuePiece(PiecewiseFunction function, double expectedValue)
         {
-            Assert.AreEqual(double.MaxValue, function.Pieces.Last().UpperBound);
-            Assert.AreEqual(true, function.Pieces.Last().IncludeUpperBound);
-            Assert.AreEqual(expectedValue, function.Pieces.Last().Value);
+            Assert.AreEqual(double.MaxValue, function.Last().UpperBound);
+            Assert.AreEqual(true, function.Last().IncludeUpperBound);
+            Assert.AreEqual(expectedValue, function.Last().Value);
         }
 
         public void VerifyConstantFunction(PiecewiseFunction function, double expectedConstantValue)
         {
-            Assert.AreEqual(1, function.Pieces.Count);
-            Assert.AreEqual(double.MaxValue, function.Pieces[0].UpperBound);
-            Assert.AreEqual(true, function.Pieces[0].IncludeUpperBound);
-            Assert.AreEqual(expectedConstantValue, function.Pieces[0].Value);
+            Assert.AreEqual(1, function.Count);
+            Assert.AreEqual(double.MaxValue, function[0].UpperBound);
+            Assert.AreEqual(true, function[0].IncludeUpperBound);
+            Assert.AreEqual(expectedConstantValue, function[0].Value);
         }
     }
 
@@ -249,35 +249,32 @@
     {
         public object[] Functions { get; private set; }
 
-        public IEnumerable<PiecewiseFunction> GetFunctions()
+        public IEnumerable<PiecewiseFunction> GetFunctions() => new List<PiecewiseFunction>
         {
-            return new List<PiecewiseFunction>
-            {
-                this.Zero,
-                this.StepUpIncludeRight,
-                this.StepUpIncludeLeft,
-                this.StepDownIncludeRight,
-                this.StepDownIncludeLeft,
-                this.Floor,
-                this.Ceiling,
-                this.Round,
-                this.RoundMidpointUp,
-                this.RoundMidpointToEven,
-                this.LessThanFive,
-                this.LessThanOrEqualToFive,
-                this.GreaterThanFive,
-                this.GreaterThanOrEqualToFive,
-                this.LessThanTwo,
-                this.LessThanOrEqualToTwo,
-                this.GreaterThanTwo,
-                this.GreaterThanOrEqualToTwo,
-                this.TwoIfLessThanTwo,
-                this.TwoIfLessThanOrEqualToTwo,
-                this.TwoIfGreaterThanTwo,
-                this.TwoIfGreaterThanOrEqualToTwo,
-                this.Even
-            };
-        }
+            this.Zero,
+            this.StepUpIncludeRight,
+            this.StepUpIncludeLeft,
+            this.StepDownIncludeRight,
+            this.StepDownIncludeLeft,
+            this.Floor,
+            this.Ceiling,
+            this.Round,
+            this.RoundMidpointUp,
+            this.RoundMidpointToEven,
+            this.LessThanFive,
+            this.LessThanOrEqualToFive,
+            this.GreaterThanFive,
+            this.GreaterThanOrEqualToFive,
+            this.LessThanTwo,
+            this.LessThanOrEqualToTwo,
+            this.GreaterThanTwo,
+            this.GreaterThanOrEqualToTwo,
+            this.TwoIfLessThanTwo,
+            this.TwoIfLessThanOrEqualToTwo,
+            this.TwoIfGreaterThanTwo,
+            this.TwoIfGreaterThanOrEqualToTwo,
+            this.Even
+        };
 
         [Test]
         public void ReturnsTrueForEmptyFunctionAndZeroValuedFunction()
@@ -288,7 +285,7 @@
             Assert.IsTrue(emptyFunction.IsEquivalent(this.Zero));
         }
 
-        [Test, TestCaseSource("GetFunctions")]
+        [Test, TestCaseSource(nameof(GetFunctions))]
         public void ReturnsTrueForCopiedFunction(PiecewiseFunction function)
         {
             var copiedFunction = new PiecewiseFunction(function);
@@ -571,7 +568,7 @@
         {
             var result = PiecewiseFunction.AddMany(new PiecewiseFunction[0]);
 
-            Assert.AreEqual(0, result.Pieces.Count);
+            Assert.AreEqual(0, result.Count);
         }
 
         [Test]
@@ -993,145 +990,73 @@
     [TestFixture]
     public class GreaterThanPiecewiseFunctionOperator : InequalityTest
     {
-        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return first > second;
-        }
+        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second) => first > second;
 
-        public override bool GreaterThan
-        {
-            get { return true; }
-        }
+        public override bool GreaterThan => true;
 
-        public override bool LessThan
-        {
-            get { return false; }
-        }
+        public override bool LessThan => false;
 
-        public override bool EqualTo
-        {
-            get { return false; }
-        }
+        public override bool EqualTo => false;
     }
 
     [TestFixture]
     public class GreaterThanOrEqualsPiecewiseFunctionOperator : InequalityTest
     {
-        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return first >= second;
-        }
+        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second) => first >= second;
 
-        public override bool GreaterThan
-        {
-            get { return true; }
-        }
+        public override bool GreaterThan => true;
 
-        public override bool LessThan
-        {
-            get { return false; }
-        }
+        public override bool LessThan => false;
 
-        public override bool EqualTo
-        {
-            get { return true; }
-        }
+        public override bool EqualTo => true;
     }
 
     [TestFixture]
     public class LessThanPiecewiseFunctionOperator : InequalityTest
     {
-        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return first < second;
-        }
+        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second) => first < second;
 
-        public override bool GreaterThan
-        {
-            get { return false; }
-        }
+        public override bool GreaterThan => false;
 
-        public override bool LessThan
-        {
-            get { return true; }
-        }
+        public override bool LessThan => true;
 
-        public override bool EqualTo
-        {
-            get { return false; }
-        }
+        public override bool EqualTo => false;
     }
 
     [TestFixture]
     public class LessThanOrEqualsPiecewiseFunctionOperator : InequalityTest
     {
-        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return first <= second;
-        }
+        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second) => first <= second;
 
-        public override bool GreaterThan
-        {
-            get { return false; }
-        }
+        public override bool GreaterThan => false;
 
-        public override bool LessThan
-        {
-            get { return true; }
-        }
+        public override bool LessThan => true;
 
-        public override bool EqualTo
-        {
-            get { return true; }
-        }
+        public override bool EqualTo => true;
     }
 
     [TestFixture]
     public class EqualsPiecewiseFunctionOperator : InequalityTest
     {
-        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return PiecewiseFunction.EqualTo(first, second);
-        }
+        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second) => PiecewiseFunction.EqualTo(first, second);
 
-        public override bool GreaterThan
-        {
-            get { return false; }
-        }
+        public override bool GreaterThan => false;
 
-        public override bool LessThan
-        {
-            get { return false; }
-        }
+        public override bool LessThan => false;
 
-        public override bool EqualTo
-        {
-            get { return true; }
-        }
+        public override bool EqualTo => true;
     }
 
     [TestFixture]
     public class NotEqualsPiecewiseFunctionOperator : InequalityTest
     {
-        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return PiecewiseFunction.NotEqualTo(first, second);
-        }
+        public override PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second) => PiecewiseFunction.NotEqualTo(first, second);
 
-        public override bool GreaterThan
-        {
-            get { return true; }
-        }
+        public override bool GreaterThan => true;
 
-        public override bool LessThan
-        {
-            get { return true; }
-        }
+        public override bool LessThan => true;
 
-        public override bool EqualTo
-        {
-            get { return false; }
-        }
+        public override bool EqualTo => false;
     }
 
     [TestFixture]
