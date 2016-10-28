@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Rock.Math")]
 [assembly: AssemblyDescription("Some common math constructs.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("IT Team Einstein")]
+[assembly: AssemblyCompany("Quicken Loans")]
 [assembly: AssemblyProduct("Rock.Math")]
 [assembly: AssemblyCopyright("Copyright © Quicken Loans 2014")]
 [assembly: AssemblyTrademark("")]
