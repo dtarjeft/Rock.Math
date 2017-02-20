@@ -116,21 +116,9 @@
             this.pieces = new List<Piece>(other);
         }
 
-        public int Count
-        {
-            get
-            {
-                return this.pieces.Count;
-            }
-        }
+        public int Count => this.pieces.Count;
 
-        public Piece this[int index]
-        {
-            get
-            {
-                return this.pieces[index];
-            }
-        }
+        public Piece this[int index] => this.pieces[index];
 
         /// <summary>
         /// Given a piecewise function, returns an essentially-identical function that merges any adjacent pieces with the same value.
@@ -146,20 +134,21 @@
                 var highPiece = newFunction[i];
                 var lowPiece = newFunction[i - 1];
 
-                if (highPiece.Value.ApproximatelyEquals(lowPiece.Value))
+                if (!highPiece.Value.ApproximatelyEquals(lowPiece.Value))
                 {
-                    // Combine the two pieces
-                    var newPiece = new Piece
-                    {
-                        IncludeUpperBound = highPiece.IncludeUpperBound,
-                        UpperBound = highPiece.UpperBound,
-                        Value = highPiece.Value
-                    };
-
-                    newFunction.pieces.RemoveAt(i);
-                    newFunction.pieces.RemoveAt(i - 1);
-                    newFunction.pieces.Insert(i - 1, newPiece);
+                    continue;
                 }
+                // Combine the two pieces
+                var newPiece = new Piece
+                {
+                    IncludeUpperBound = highPiece.IncludeUpperBound,
+                    UpperBound = highPiece.UpperBound,
+                    Value = highPiece.Value
+                };
+
+                newFunction.pieces.RemoveAt(i);
+                newFunction.pieces.RemoveAt(i - 1);
+                newFunction.pieces.Insert(i - 1, newPiece);
             }
 
             return newFunction;
@@ -244,10 +233,7 @@
             PiecewiseFunction second,
             Func<object, double, double, double> combination,
             Func<object, double, double> evaluation1,
-            Func<object, double, double> evaluation2)
-        {
-            return Combine(first, second, null, combination, evaluation1, evaluation2);
-        }
+            Func<object, double, double> evaluation2) => Combine(first, second, null, combination, evaluation1, evaluation2);
 
         /// <summary>
         /// Creates a new function representing the combination of the inputted functions, using the given mechanism to combine their values.
@@ -452,10 +438,7 @@
         /// <param name="function">A piecewise function.</param>
         /// <param name="constantValue">Some value by which to multiply the function.</param>
         /// <returns>A new piecewise function where, for a given X-value, the Y-value should be equal to the Y-value of the inputted function times the inputted double value.</returns>
-        public static PiecewiseFunction operator *(PiecewiseFunction function, double constantValue)
-        {
-            return Modify(function, MultiplyByConstant, constantValue);
-        }
+        public static PiecewiseFunction operator *(PiecewiseFunction function, double constantValue) => Modify(function, MultiplyByConstant, constantValue);
 
         /// <summary>
         /// Creates a new function representing the piecewise product of the inputted functions.
@@ -463,10 +446,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal to the product of the Y-values of the two functions at the same X-value.</returns>
-        public static PiecewiseFunction operator *(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, MultiplyPieces, ZeroFunction, ZeroFunction);
-        }
+        public static PiecewiseFunction operator *(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, MultiplyPieces, ZeroFunction, ZeroFunction);
 
         /// <summary>
         /// Creates a new function representing the piecewise quotient of the inputted functions.
@@ -474,10 +454,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal to the Y-value of the first divided by the Y-value of the second at the same X-value.</returns>
-        public static PiecewiseFunction operator /(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, DividePieces, ZeroFunction, ZeroFunction);
-        }
+        public static PiecewiseFunction operator /(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, DividePieces, ZeroFunction, ZeroFunction);
 
         /// <summary>
         /// Creates a new function equal to the inputted function, but increased throughout by the given amount.
@@ -485,10 +462,7 @@
         /// <param name="function">A piecewise function.</param>
         /// <param name="constantValue">Some value by which to increase the function.</param>
         /// <returns>A new piecewise function where, for a given X-value, the Y-value should be equal to the Y-value of the inputted function plus the inputted double value.</returns>
-        public static PiecewiseFunction operator +(PiecewiseFunction function, double constantValue)
-        {
-            return Modify(function, AddConstant, constantValue);
-        }
+        public static PiecewiseFunction operator +(PiecewiseFunction function, double constantValue) => Modify(function, AddConstant, constantValue);
 
         /// <summary>
         /// Creates a new function equal to the inputted function, but decreased throughout by the given amount.
@@ -496,10 +470,7 @@
         /// <param name="function">A piecewise function.</param>
         /// <param name="constantValue">Some value by which to decrease the function.</param>
         /// <returns>A new piecewise function where, for a given X-value, the Y-value should be equal to the Y-value of the inputted function minus the inputted double value.</returns>
-        public static PiecewiseFunction operator -(PiecewiseFunction function, double constantValue)
-        {
-            return Modify(function, SubtractConstant, constantValue);
-        }
+        public static PiecewiseFunction operator -(PiecewiseFunction function, double constantValue) => Modify(function, SubtractConstant, constantValue);
 
         /// <summary>
         /// Creates a new function representing the sum of the inputted functions.
@@ -507,10 +478,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal to the sum of the Y-values of the two functions at the same X-value.</returns>
-        public static PiecewiseFunction operator +(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, AddPieces, IdentityFunction, IdentityFunction);
-        }
+        public static PiecewiseFunction operator +(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, AddPieces, IdentityFunction, IdentityFunction);
 
         /// <summary>
         /// Creates a new function representing the difference of the inputted functions.
@@ -518,10 +486,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal to the Y-value of the first function less the Y-value of the second at the same X-value.</returns>
-        public static PiecewiseFunction operator -(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, SubtractPieces, IdentityFunction, NegationFunction);
-        }
+        public static PiecewiseFunction operator -(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, SubtractPieces, IdentityFunction, NegationFunction);
 
         /// <summary>
         /// Creates a new function representing the greater value of the two functions at all possible X-values.
@@ -529,10 +494,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal to the greater of the Y-values of the two functions at the same X-value.</returns>
-        public static PiecewiseFunction Greater(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, GreaterOf, ZeroOrGreater, ZeroOrGreater);
-        }
+        public static PiecewiseFunction Greater(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, GreaterOf, ZeroOrGreater, ZeroOrGreater);
 
         /// <summary>
         /// Creates a new function representing the lesser value of the two functions at all possible X-values.
@@ -540,10 +502,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal to the lesser of the Y-values of the two functions at the same X-value.</returns>
-        public static PiecewiseFunction Lesser(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, LesserOf, ZeroOrLess, ZeroOrLess);
-        }
+        public static PiecewiseFunction Lesser(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, LesserOf, ZeroOrLess, ZeroOrLess);
 
         /// <summary>
         /// Creates a new function representing the sum of the inputted functions.
@@ -561,7 +520,7 @@
             var upperBound = double.MaxValue;
             var ending = new bool[count];
 
-            bool anyExist = false;
+            var anyExist = false;
 
             int current;
             for (current = 0; current < functions.Length; current++)
@@ -595,26 +554,28 @@
 
             while (anyExist)
             {
-                bool notIncludeUpperBound = false;
+                var notIncludeUpperBound = false;
 
                 for (var i = 0; i < functions.Length; i++)
                 {
-                    if (ending[i])
+                    if (!ending[i])
                     {
-                        if (!pieces[i].Value.IncludeUpperBound)
-                        {
-                            // We can go ahead and move the enumerator forward on these pieces as we know they are ending
-                            notIncludeUpperBound = true;
-                            if (functions[i].Count > indexes[i] + 1)
-                            {
-                                indexes[i] = indexes[i] + 1;
-                                pieces[i] = functions[i][indexes[i]];
-                            }
-                            else
-                            {
-                                pieces[i] = null;
-                            }
-                        }
+                        continue;
+                    }
+                    if (pieces[i] != null && pieces[i].Value.IncludeUpperBound)
+                    {
+                        continue;
+                    }
+                    // We can go ahead and move the enumerator forward on these pieces as we know they are ending
+                    notIncludeUpperBound = true;
+                    if (functions[i].Count > indexes[i] + 1)
+                    {
+                        indexes[i] = indexes[i] + 1;
+                        pieces[i] = functions[i][indexes[i]];
+                    }
+                    else
+                    {
+                        pieces[i] = null;
                     }
                 }
 
@@ -629,17 +590,18 @@
                     newFunctionPieces.Add(new Piece { UpperBound = upperBound, IncludeUpperBound = true, Value = currentValue });
                     for (var i = 0; i < functions.Length; i++)
                     {
-                        if (ending[i])
+                        if (!ending[i])
                         {
-                            if (functions[i].Count > indexes[i] + 1)
-                            {
-                                indexes[i] = indexes[i] + 1;
-                                pieces[i] = functions[i][indexes[i]];
-                            }
-                            else
-                            {
-                                pieces[i] = null;
-                            }
+                            continue;
+                        }
+                        if (functions[i].Count > indexes[i] + 1)
+                        {
+                            indexes[i] = indexes[i] + 1;
+                            pieces[i] = functions[i][indexes[i]];
+                        }
+                        else
+                        {
+                            pieces[i] = null;
                         }
                     }
                 }
@@ -652,21 +614,22 @@
 
                 for (var i = 0; i < count; i++)
                 {
-                    if (pieces[i].HasValue)
+                    if (!pieces[i].HasValue)
                     {
-                        anyExist = true;
-                        currentValue += pieces[i].Value.Value;
+                        continue;
+                    }
+                    anyExist = true;
+                    currentValue += pieces[i].Value.Value;
 
-                        if (pieces[i].Value.UpperBound.ApproximatelyEquals(upperBound))
-                        {
-                            ending[i] = true;
-                        }
-                        else if (pieces[i].Value.UpperBound < upperBound)
-                        {
-                            Clear(ending);
-                            ending[i] = true;
-                            upperBound = pieces[i].Value.UpperBound;
-                        }
+                    if (pieces[i].Value.UpperBound.ApproximatelyEquals(upperBound))
+                    {
+                        ending[i] = true;
+                    }
+                    else if (pieces[i].Value.UpperBound < upperBound)
+                    {
+                        Clear(ending);
+                        ending[i] = true;
+                        upperBound = pieces[i].Value.UpperBound;
                     }
                 }
             }
@@ -688,10 +651,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal 1 if both functions have a nonzero Y-value at the same X-value.</returns>
-        public static PiecewiseFunction operator &(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, PiecewiseAnd, ZeroFunction, ZeroFunction);
-        }
+        public static PiecewiseFunction operator &(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, PiecewiseAnd, ZeroFunction, ZeroFunction);
 
         /// <summary>
         /// Creates a new function representing the logical-OR of the inputted functions.
@@ -699,20 +659,14 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal 1 if either function has a nonzero Y-value at the same X-value.</returns>
-        public static PiecewiseFunction operator |(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, PiecewiseOr, IsTrueFunction, IsTrueFunction);
-        }
+        public static PiecewiseFunction operator |(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, PiecewiseOr, IsTrueFunction, IsTrueFunction);
 
         /// <summary>
         /// Creates a new function representing the logical-NOT of the inputted function (i.e., with value 1 where the function has value 0 and value 0 where the function has any non-zero value).
         /// </summary>
         /// <param name="function">A piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value is 1 if the original function's Y-value was 0, and otherwise the Y-value is 0.</returns>
-        public static PiecewiseFunction LogicalNot(PiecewiseFunction function)
-        {
-            return Modify(function, NotFunction);
-        }
+        public static PiecewiseFunction LogicalNot(PiecewiseFunction function) => Modify(function, NotFunction);
 
         /// <summary>
         /// Creates a new function representing the logical-XOR of the inputted functions.
@@ -720,10 +674,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value should be equal 1 if either the first function or the second function has a nonzero Y-value at the same X-value, but not both.</returns>
-        public static PiecewiseFunction operator ^(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, PiecewiseXOr, IsTrueFunction, IsTrueFunction);
-        }
+        public static PiecewiseFunction operator ^(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, PiecewiseXOr, IsTrueFunction, IsTrueFunction);
 
         /// <summary>
         /// Creates a new function representing the inequality "Greater Than" for the inputted functions.
@@ -731,10 +682,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the first function should be greater than the Y-value of the second function at the same X-value.</returns>
-        public static PiecewiseFunction operator >(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, GreaterThan, IsGreaterThanZero, IsLessThanZero);
-        }
+        public static PiecewiseFunction operator >(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, GreaterThan, IsGreaterThanZero, IsLessThanZero);
 
         /// <summary>
         /// Creates a new piecewise function representing the inequality "Greater Than" for the inputted piecewise function and linear function.
@@ -742,10 +690,7 @@
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <param name="linearFunction">A linear function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the piecewise function should be 1.0 if the piecewise function is greater than the linear function at the same X-value, and 0.0 otherwise.</returns>
-        public static PiecewiseFunction operator >(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction)
-        {
-            return PiecewiseLinearInequality(piecewiseFunction, linearFunction, false, false, true);
-        }
+        public static PiecewiseFunction operator >(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction) => PiecewiseLinearInequality(piecewiseFunction, linearFunction, false, false, true);
 
         /// <summary>
         /// Creates a new function representing the inequality "Greater Than or Equal To" for the inputted functions.
@@ -753,10 +698,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the first function should be greater than or equal to the Y-value of the second function at the same X-value.</returns>
-        public static PiecewiseFunction operator >=(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, GreaterThanOrEquals, IsGreaterThanOrEqualToZero, IsLessThanOrEqualToZero);
-        }
+        public static PiecewiseFunction operator >=(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, GreaterThanOrEquals, IsGreaterThanOrEqualToZero, IsLessThanOrEqualToZero);
 
         /// <summary>
         /// Creates a new piecewise function representing the inequality "Greater Than Or Equal To" for the inputted piecewise function and linear function.
@@ -764,10 +706,7 @@
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <param name="linearFunction">A linear function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the piecewise function should be 1.0 if the piecewise function is greater than or equal to the linear function at the same X-value, and 0.0 otherwise.</returns>
-        public static PiecewiseFunction operator >=(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction)
-        {
-            return PiecewiseLinearInequality(piecewiseFunction, linearFunction, false, true, true);
-        }
+        public static PiecewiseFunction operator >=(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction) => PiecewiseLinearInequality(piecewiseFunction, linearFunction, false, true, true);
 
         /// <summary>
         /// Creates a new function representing the inequality "Less Than" for the inputted functions.
@@ -775,10 +714,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the first function should be less than the Y-value of the second function at the same X-value.</returns>
-        public static PiecewiseFunction operator <(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, LessThan, IsLessThanZero, IsGreaterThanZero);
-        }
+        public static PiecewiseFunction operator <(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, LessThan, IsLessThanZero, IsGreaterThanZero);
 
         /// <summary>
         /// Creates a new piecewise function representing the inequality "Less Than" for the inputted piecewise function and linear function.
@@ -786,10 +722,7 @@
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <param name="linearFunction">A linear function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the piecewise function should be 1.0 if the piecewise function is less than the linear function at the same X-value, and 0.0 otherwise.</returns>
-        public static PiecewiseFunction operator <(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction)
-        {
-            return PiecewiseLinearInequality(piecewiseFunction, linearFunction, true, false, false);
-        }
+        public static PiecewiseFunction operator <(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction) => PiecewiseLinearInequality(piecewiseFunction, linearFunction, true, false, false);
 
         /// <summary>
         /// Creates a new function representing the inequality "Less Than or Equal To" for the inputted functions.
@@ -797,10 +730,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the first function should be less than or equal to the Y-value of the second function at the same X-value.</returns>
-        public static PiecewiseFunction operator <=(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, LessThanOrEquals, IsLessThanOrEqualToZero, IsGreaterThanOrEqualToZero);
-        }
+        public static PiecewiseFunction operator <=(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, LessThanOrEquals, IsLessThanOrEqualToZero, IsGreaterThanOrEqualToZero);
 
         /// <summary>
         /// Creates a new piecewise function representing the inequality "Less Than Or Equal To" for the inputted piecewise function and linear function.
@@ -808,10 +738,7 @@
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <param name="linearFunction">A linear function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the piecewise function should be 1.0 if the piecewise function is less than or equal to the linear function at the same X-value, and 0.0 otherwise.</returns>
-        public static PiecewiseFunction operator <=(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction)
-        {
-            return PiecewiseLinearInequality(piecewiseFunction, linearFunction, true, true, false);
-        }
+        public static PiecewiseFunction operator <=(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction) => PiecewiseLinearInequality(piecewiseFunction, linearFunction, true, true, false);
 
         /// <summary>
         /// Creates a new piecewise function representing the inequality "Equal To" for the inputted piecewise function and linear function.
@@ -819,10 +746,7 @@
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <param name="linearFunction">A linear function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the piecewise function should be 1.0 if the piecewise function is equal to the linear function at the same X-value, and 0.0 otherwise.</returns>
-        public static PiecewiseFunction EqualTo(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction)
-        {
-            return PiecewiseLinearInequality(piecewiseFunction, linearFunction, false, true, false);
-        }
+        public static PiecewiseFunction EqualTo(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction) => PiecewiseLinearInequality(piecewiseFunction, linearFunction, false, true, false);
 
         /// <summary>
         /// Creates a new piecewise function representing the inequality "Not Equal To" for the inputted piecewise function and linear function.
@@ -830,10 +754,7 @@
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <param name="linearFunction">A linear function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the piecewise function should be 1.0 if the piecewise function is not equal to the linear function at the same X-value, and 0.0 otherwise.</returns>
-        public static PiecewiseFunction NotEqualTo(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction)
-        {
-            return PiecewiseLinearInequality(piecewiseFunction, linearFunction, true, false, true);
-        }
+        public static PiecewiseFunction NotEqualTo(PiecewiseFunction piecewiseFunction, LinearFunction linearFunction) => PiecewiseLinearInequality(piecewiseFunction, linearFunction, true, false, true);
 
         /// <summary>
         /// Creates a new function representing the equality "Equal To" for the inputted functions.
@@ -841,10 +762,7 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the first function should be equal to the Y-value of the second function at the same X-value.</returns>
-        public static PiecewiseFunction EqualTo(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, IsEqualTo, IsFalseFunction, IsFalseFunction);
-        }
+        public static PiecewiseFunction EqualTo(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, IsEqualTo, IsFalseFunction, IsFalseFunction);
 
         /// <summary>
         /// Creates a new function representing the inequality "Not Equal To" for the inputted functions.
@@ -852,15 +770,9 @@
         /// <param name="first">A piecewise function.</param>
         /// <param name="second">Another piecewise function.</param>
         /// <returns>A piecewise function where, for a given X-value, the Y-value of the first function should be not equal to the Y-value of the second function at the same X-value.</returns>
-        public static PiecewiseFunction NotEqualTo(PiecewiseFunction first, PiecewiseFunction second)
-        {
-            return Combine(first, second, IsNotEqualTo, IsTrueFunction, IsTrueFunction);
-        }
+        public static PiecewiseFunction NotEqualTo(PiecewiseFunction first, PiecewiseFunction second) => Combine(first, second, IsNotEqualTo, IsTrueFunction, IsTrueFunction);
 
-        public IEnumerator<Piece> GetEnumerator()
-        {
-            return this.pieces.GetEnumerator();
-        }
+        public IEnumerator<Piece> GetEnumerator() => this.pieces.GetEnumerator();
 
         /// <inheritdoc/>
         public override string ToString()
@@ -876,33 +788,19 @@
                     var previousPiece = this[i - 1];
 
                     subStrings.Add(
-                    string.Format(
-                        "{0}{1}{2}{3}: {4}",
-                        previousPiece.UpperBound,
-                        previousPiece.IncludeUpperBound ? " < x" : " <= x",
-                        piece.IncludeUpperBound ? " <= " : " < ",
-                        piece.UpperBound,
-                        piece.Value));
+                        $"{previousPiece.UpperBound}{(previousPiece.IncludeUpperBound ? " < x" : " <= x")}{(piece.IncludeUpperBound ? " <= " : " < ")}{piece.UpperBound}: {piece.Value}");
                 }
                 else
                 {
                     subStrings.Add(
-                    string.Format(
-                        "{0} <= x {1}{2}: {3}",
-                        double.MinValue,
-                        piece.IncludeUpperBound ? "<= " : "< ",
-                        piece.UpperBound,
-                        piece.Value));
+                        $"{double.MinValue} <= x {(piece.IncludeUpperBound ? "<= " : "< ")}{piece.UpperBound}: {piece.Value}");
                 }
             }
 
             return string.Join(", \r\n", subStrings);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         /// <summary>
         /// Add a piece to the end of the function. Only works if the LowerBound and IncludeLeft are appropriate to the function built thus far.
@@ -946,10 +844,7 @@
         /// </summary>
         /// <param name="upperBound">Upper bound of the piece.</param>
         /// <param name="value">Value of the function for this piece.</param>
-        public void Add(double upperBound, double value)
-        {
-            this.Add(upperBound, true, value);
-        }
+        public void Add(double upperBound, double value) => this.Add(upperBound, true, value);
 
         /// <summary>
         /// Add a piece to the end of the function. Lower bound, and whether it is included, will be determined automatically.
@@ -1197,10 +1092,7 @@
         /// <param name="a">First number.</param>
         /// <param name="b">Second number.</param>
         /// <returns>Whichever of the two numbers is lower.</returns>
-        private static double Lower(double a, double b)
-        {
-            return a < b ? a : b;
-        }
+        private static double Lower(double a, double b) => a < b ? a : b;
 
         /// <summary>
         /// Gets a new piecewise function that represents the specified inequality between a piecewise function and a linear function.
@@ -1229,7 +1121,7 @@
             // Possibly we just have a constant function instead of a linear function
             if (linearFunction.Slope == 0.0)
             {
-                foreach (Piece piece in piecewiseFunction)
+                foreach (var piece in piecewiseFunction)
                 {
                     if (piece.Value.ApproximatelyEquals(linearFunction.YIntersect))
                     {
@@ -1252,7 +1144,7 @@
             var currentLowerBound = double.MinValue;
             var includeLowerBound = true;
 
-            foreach (Piece piece in piecewiseFunction)
+            foreach (var piece in piecewiseFunction)
             {
                 var intersection = linearFunction.GetXValue(piece.Value);
 
@@ -1410,12 +1302,7 @@
                     return false;
                 }
 
-                if (value > this.UpperBound)
-                {
-                    return false;
-                }
-
-                return true;
+                return !(value > this.UpperBound);
             }
         }
     }

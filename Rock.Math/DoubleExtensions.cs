@@ -51,8 +51,8 @@
             if (approximatelyZero < 0.0)
             {
                 throw new ArgumentException(
-                    string.Format("Optional parameter must be greater than or equal to zero (was {0}).", approximatelyZero),
-                    "approximatelyZero");
+                    $"Optional parameter must be greater than or equal to zero (was {approximatelyZero}).",
+                    nameof(approximatelyZero));
             }
 
             return Math.Abs(a) <= approximatelyZero;
