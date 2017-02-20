@@ -62,10 +62,7 @@
 
         public double Slope { get; set; }
 
-        public double GetXValue(double yValue)
-        {
-            return (yValue - this.YIntersect) / this.Slope;
-        }
+        public double GetXValue(double yValue) => (yValue - this.YIntersect) / this.Slope;
 
         /// <summary>
         /// Finds the x-coordinate of the point where two linear functions meet (or null if they have approximately the same slope).
@@ -103,10 +100,7 @@
         /// <param name="first">A linear function.</param>
         /// <param name="second">A value by which to raise the linear function.</param>
         /// <returns>A new linear function.</returns>
-        public static LinearFunction operator +(LinearFunction first, double second)
-        {
-            return new LinearFunction(first.Slope, first.YIntersect + second);
-        }
+        public static LinearFunction operator +(LinearFunction first, double second) => new LinearFunction(first.Slope, first.YIntersect + second);
 
         /// <summary>
         /// Creates a new linear function whose slope and y-intersect are equal to the sums of those of the argument functions.
@@ -114,10 +108,7 @@
         /// <param name="first">A linear function.</param>
         /// <param name="second">Another linear function.</param>
         /// <returns>A new linear function.</returns>
-        public static LinearFunction operator +(LinearFunction first, LinearFunction second)
-        {
-            return new LinearFunction(first.Slope + second.Slope, first.YIntersect + second.YIntersect);
-        }
+        public static LinearFunction operator +(LinearFunction first, LinearFunction second) => new LinearFunction(first.Slope + second.Slope, first.YIntersect + second.YIntersect);
 
         /// <summary>
         /// Creates a new linear function by subtracting the given value from the function's y-intersect, i.e., lowering the line by this amount.
@@ -125,10 +116,7 @@
         /// <param name="first">A linear function.</param>
         /// <param name="second">A value by which to lower the linear function.</param>
         /// <returns>A new linear function.</returns>
-        public static LinearFunction operator -(LinearFunction first, double second)
-        {
-            return new LinearFunction(first.Slope, first.YIntersect - second);
-        }
+        public static LinearFunction operator -(LinearFunction first, double second) => new LinearFunction(first.Slope, first.YIntersect - second);
 
         /// <summary>
         /// Creates a new linear function whose slope and y-intersect are equal to the values of the first argument function minus the values of the second argument function.
@@ -136,10 +124,7 @@
         /// <param name="first">A linear function.</param>
         /// <param name="second">A linear function by which to reduce the other function.</param>
         /// <returns>A new linear function.</returns>
-        public static LinearFunction operator -(LinearFunction first, LinearFunction second)
-        {
-            return new LinearFunction(first.Slope - second.Slope, first.YIntersect - second.YIntersect);
-        }
+        public static LinearFunction operator -(LinearFunction first, LinearFunction second) => new LinearFunction(first.Slope - second.Slope, first.YIntersect - second.YIntersect);
 
         /// <summary>
         /// Creates a new linear function by multiplying the given value by the function's slope and y-intersect, i.e., scaling the function up by the provided ratio.
@@ -147,10 +132,7 @@
         /// <param name="first">A linear function.</param>
         /// <param name="second">A value by which to scale the linear function.</param>
         /// <returns>A new linear function.</returns>
-        public static LinearFunction operator *(LinearFunction first, double second)
-        {
-            return new LinearFunction(first.Slope * second, first.YIntersect * second);
-        }
+        public static LinearFunction operator *(LinearFunction first, double second) => new LinearFunction(first.Slope * second, first.YIntersect * second);
 
         /// <summary>
         /// Creates a new linear function by dividing the given value by the function's slope and y-intersect, i.e., scaling the function down by the provided ratio.
@@ -158,10 +140,7 @@
         /// <param name="first">A linear function.</param>
         /// <param name="second">A value by which to scale down the linear function.</param>
         /// <returns>A new linear function.</returns>
-        public static LinearFunction operator /(LinearFunction first, double second)
-        {
-            return new LinearFunction(first.Slope / second, first.YIntersect / second);
-        }
+        public static LinearFunction operator /(LinearFunction first, double second) => new LinearFunction(first.Slope / second, first.YIntersect / second);
 
         /// <summary>
         /// Creates a piecewise function that has a value of 1.0 wherever the linear function is greater than the piecewise function and 0.0 otherwise.
@@ -169,10 +148,7 @@
         /// <param name="linearFunction">A linear function.</param>
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <returns>A piecewise function representing the ranges for which the inequality is true.</returns>
-        public static PiecewiseFunction operator >(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction)
-        {
-            return piecewiseFunction < linearFunction;
-        }
+        public static PiecewiseFunction operator >(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction) => piecewiseFunction < linearFunction;
 
         /// <summary>
         /// Creates a piecewise function that has a value of 1.0 wherever the linear function is less than the piecewise function and 0.0 otherwise.
@@ -180,10 +156,7 @@
         /// <param name="linearFunction">A linear function.</param>
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <returns>A piecewise function representing the ranges for which the inequality is true.</returns>
-        public static PiecewiseFunction operator <(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction)
-        {
-            return piecewiseFunction > linearFunction;
-        }
+        public static PiecewiseFunction operator <(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction) => piecewiseFunction > linearFunction;
 
         /// <summary>
         /// Creates a piecewise function that has a value of 1.0 wherever the linear function is greater than or equal to the piecewise function and 0.0 otherwise.
@@ -191,10 +164,7 @@
         /// <param name="linearFunction">A linear function.</param>
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <returns>A piecewise function representing the ranges for which the inequality is true.</returns>
-        public static PiecewiseFunction operator >=(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction)
-        {
-            return piecewiseFunction <= linearFunction;
-        }
+        public static PiecewiseFunction operator >=(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction) => piecewiseFunction <= linearFunction;
 
         /// <summary>
         /// Creates a piecewise function that has a value of 1.0 wherever the linear function is less than or equal to the piecewise function and 0.0 otherwise.
@@ -202,9 +172,6 @@
         /// <param name="linearFunction">A linear function.</param>
         /// <param name="piecewiseFunction">A piecewise function.</param>
         /// <returns>A piecewise function representing the ranges for which the inequality is true.</returns>
-        public static PiecewiseFunction operator <=(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction)
-        {
-            return piecewiseFunction >= linearFunction;
-        }
+        public static PiecewiseFunction operator <=(LinearFunction linearFunction, PiecewiseFunction piecewiseFunction) => piecewiseFunction >= linearFunction;
     }
 }
