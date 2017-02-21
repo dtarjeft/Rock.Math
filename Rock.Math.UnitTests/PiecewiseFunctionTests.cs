@@ -1904,6 +1904,23 @@
             Assert.AreEqual(0.0, result.GetValue(1.0001));
             Assert.AreEqual(0.0, result.GetValue(1.5));
         }
+
+        [Test]
+        public void HandlesIntersectionAtPieceThatSpansASinglePoint()
+        {
+            var linear = new LinearFunction(25, 0);
+            var pwf = new PiecewiseFunction
+            {
+                { 0.8, false, 2 },  // min <  x <  .8 : 2
+                { 0.8, 20 },        // .8  <= x <= .8 : 20
+            };
+
+            PiecewiseFunction result = null;
+            Assert.DoesNotThrow(() => result = PiecewiseFunction.EqualTo(pwf, linear));
+            Assert.AreEqual(0.0, result.GetValue(0.8 - .000005));
+            Assert.AreEqual(1.0, result.GetValue(0.8));
+            Assert.AreEqual(0.0, result.GetValue(0.8 + .000005));
+        }
     }
 
     [TestFixture]

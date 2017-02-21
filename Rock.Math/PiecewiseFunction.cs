@@ -1160,7 +1160,10 @@
                         result.Add(currentLowerBound, true, equalTo ? 1.0 : 0.0);
                     }
 
-                    result.Add(piece.UpperBound, piece.IncludeUpperBound, trueAfterIntersection ? 1.0 : 0.0);
+                    if (!piece.UpperBound.ApproximatelyEquals(currentLowerBound))
+                    {
+                        result.Add(piece.UpperBound, piece.IncludeUpperBound, trueAfterIntersection ? 1.0 : 0.0);
+                    }
                 }
                 else if (intersection.ApproximatelyEquals(piece.UpperBound))
                 {
