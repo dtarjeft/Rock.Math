@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rock.Math", "Rock.Math\Rock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rock.Math.UnitTests", "Rock.Math.UnitTests\Rock.Math.UnitTests.csproj", "{582F1702-DDB3-46BC-BD99-1ED73E9EEDBF}"
 EndProject
+Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "Rock.Math.NuGetPkg", "Rock.Math.NuGetPkg\Rock.Math.NuGetPkg.nuproj", "{4B0EACDB-505A-4D90-A8BD-4D5582505B3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{582F1702-DDB3-46BC-BD99-1ED73E9EEDBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{582F1702-DDB3-46BC-BD99-1ED73E9EEDBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{582F1702-DDB3-46BC-BD99-1ED73E9EEDBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B0EACDB-505A-4D90-A8BD-4D5582505B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0EACDB-505A-4D90-A8BD-4D5582505B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B0EACDB-505A-4D90-A8BD-4D5582505B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B0EACDB-505A-4D90-A8BD-4D5582505B3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
