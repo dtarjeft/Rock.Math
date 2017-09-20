@@ -1,38 +1,36 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NUnit.Core;
-
-namespace DoubleExtensionTests
+﻿namespace DoubleExtensionTests
 {
     using Rock.Math;
+
+    using System.Collections.Generic;
 
     using NUnit.Framework;
 
     [TestFixture]
     public class ApproximatelyEquals
     {
-        public IEnumerable<double> Doubles
+        public static IEnumerable<double> Doubles
             =>
-            new[]
-            {
-                double.NegativeInfinity,
-                double.MinValue,
-                -1000000000000.0,
-                -100.0,
-                -10.0,
-                -1.0,
-                -0.01,
-                -0.0000000000001,
-                0.0,
-                0.0000000000001,
-                0.01,
-                1.0,
-                10.0,
-                100.0,
-                1000000000000.0,
-                double.MaxValue,
-                double.PositiveInfinity
-            };
+                new[]
+                {
+                    double.NegativeInfinity,
+                    double.MinValue,
+                    -1000000000000.0,
+                    -100.0,
+                    -10.0,
+                    -1.0,
+                    -0.01,
+                    -0.0000000000001,
+                    0.0,
+                    0.0000000000001,
+                    0.01,
+                    1.0,
+                    10.0,
+                    100.0,
+                    1000000000000.0,
+                    double.MaxValue,
+                    double.PositiveInfinity
+                };
 
         [TestCaseSource(nameof(Doubles))]
         public void ReturnsTrueForSameNumber(double number) => Assert.IsTrue(number.ApproximatelyEquals(number));

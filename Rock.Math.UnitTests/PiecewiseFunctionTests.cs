@@ -1,4 +1,4 @@
-﻿namespace PiecewiseFunctionTests
+namespace PiecewiseFunctionTests
 {
     using System;
     using System.Collections.Generic;
@@ -8,194 +8,148 @@
 
     using NUnit.Framework;
 
-    [TestFixture]
-    public abstract class PiecewiseFunctionTest
+    public static class TestHelpers
     {
-        protected PiecewiseFunctionTest()
+        
+
+        #region Convenience Functions
+        public static PiecewiseFunction Zero => new PiecewiseFunction { { double.MaxValue, 0.0 } };
+        public static PiecewiseFunction StepDownIncludeRight => new PiecewiseFunction
         {
-            this.StepDownIncludeRight = new PiecewiseFunction
-            {
-                { 1.0, 5.0 },
-                { 2.0, 4.0 },
-                { 3.0, 3.0 },
-                { 4.0, 2.0 },
-                { 5.0, 1.0 }
-            };
+            { 1.0, 5.0 },
+            { 2.0, 4.0 },
+            { 3.0, 3.0 },
+            { 4.0, 2.0 },
+            { 5.0, 1.0 }
+        };
 
-            this.StepDownIncludeLeft = new PiecewiseFunction
-            {
-                { 1.0, false, 5.0 },
-                { 2.0, false, 4.0 },
-                { 3.0, false, 3.0 },
-                { 4.0, false, 2.0 },
-                { 5.0, false, 1.0 }
-            };
+        public static PiecewiseFunction StepDownIncludeLeft => new PiecewiseFunction
+        {
+            { 1.0, false, 5.0 },
+            { 2.0, false, 4.0 },
+            { 3.0, false, 3.0 },
+            { 4.0, false, 2.0 },
+            { 5.0, false, 1.0 }
+        };
 
-            this.StepUpIncludeRight = new PiecewiseFunction
-            {
-                { 1.0, 1.0 },
-                { 2.0, 2.0 },
-                { 3.0, 3.0 },
-                { 4.0, 4.0 },
-                { 5.0, 5.0 }
-            };
+        public static PiecewiseFunction StepUpIncludeRight => new PiecewiseFunction
+        {
+            { 1.0, 1.0 },
+            { 2.0, 2.0 },
+            { 3.0, 3.0 },
+            { 4.0, 4.0 },
+            { 5.0, 5.0 }
+        };
 
-            this.StepUpIncludeLeft = new PiecewiseFunction
-            {
-                { 1.0, false, 1.0 },
-                { 2.0, false, 2.0 },
-                { 3.0, false, 3.0 },
-                { 4.0, false, 4.0 },
-                { 5.0, false, 5.0 }
-            };
+        public static PiecewiseFunction StepUpIncludeLeft => new PiecewiseFunction
+        {
+            { 1.0, false, 1.0 },
+            { 2.0, false, 2.0 },
+            { 3.0, false, 3.0 },
+            { 4.0, false, 4.0 },
+            { 5.0, false, 5.0 }
+        };
 
-            this.Floor = new PiecewiseFunction
-            {
-                { 1.0, false, 0.0 },
-                { 2.0, false, 1.0 },
-                { 3.0, false, 2.0 },
-                { 4.0, false, 3.0 },
-                { 5.0, false, 4.0 },
-                { 6.0, false, 5.0 },
-                { 7.0, false, 6.0 },
-                { 8.0, false, 7.0 },
-                { 9.0, false, 8.0 },
-                { 10.0, false, 9.0 }
-            };
+        public static PiecewiseFunction Floor => new PiecewiseFunction
+        {
+            { 1.0, false, 0.0 },
+            { 2.0, false, 1.0 },
+            { 3.0, false, 2.0 },
+            { 4.0, false, 3.0 },
+            { 5.0, false, 4.0 },
+            { 6.0, false, 5.0 },
+            { 7.0, false, 6.0 },
+            { 8.0, false, 7.0 },
+            { 9.0, false, 8.0 },
+            { 10.0, false, 9.0 }
+        };
 
-            this.Ceiling = new PiecewiseFunction
-            {
-                { 1.0, 1.0 },
-                { 2.0, 2.0 },
-                { 3.0, 3.0 },
-                { 4.0, 4.0 },
-                { 5.0, 5.0 },
-                { 6.0, 6.0 },
-                { 7.0, 7.0 },
-                { 8.0, 8.0 },
-                { 9.0, 9.0 },
-                { 10.0, 10.0 }
-            };
+        public static PiecewiseFunction Ceiling => new PiecewiseFunction
+        {
+            { 1.0, 1.0 },
+            { 2.0, 2.0 },
+            { 3.0, 3.0 },
+            { 4.0, 4.0 },
+            { 5.0, 5.0 },
+            { 6.0, 6.0 },
+            { 7.0, 7.0 },
+            { 8.0, 8.0 },
+            { 9.0, 9.0 },
+            { 10.0, 10.0 }
+        };
 
-            this.Round = new PiecewiseFunction
-            {
-                { 0.5, false, 0.0 },
-                { 1.5, false, 1.0 },
-                { 2.5, false, 2.0 },
-                { 3.5, false, 3.0 },
-                { 4.5, false, 4.0 },
-                { 5.5, false, 5.0 },
-            };
+        public static PiecewiseFunction Round => new PiecewiseFunction
+        {
+            { 0.5, false, 0.0 },
+            { 1.5, false, 1.0 },
+            { 2.5, false, 2.0 },
+            { 3.5, false, 3.0 },
+            { 4.5, false, 4.0 },
+            { 5.5, false, 5.0 },
+        };
 
-            this.RoundMidpointUp = new PiecewiseFunction
-            {
-                { 0.5, false, 0.0 },
-                { 1.5, false, 1.0 },
-                { 2.5, false, 2.0 },
-                { 3.5, false, 3.0 },
-                { 4.5, false, 4.0 },
-                { 5.5, false, 5.0 },
-            };
+        public static PiecewiseFunction RoundMidpointUp => new PiecewiseFunction
+        {
+            { 0.5, false, 0.0 },
+            { 1.5, false, 1.0 },
+            { 2.5, false, 2.0 },
+            { 3.5, false, 3.0 },
+            { 4.5, false, 4.0 },
+            { 5.5, false, 5.0 },
+        };
 
-            this.RoundMidpointToEven = new PiecewiseFunction
-            {
-                { 0.5, true, 0.0 },
-                { 1.5, false, 1.0 },
-                { 2.5, true, 2.0 },
-                { 3.5, false, 3.0 },
-                { 4.5, true, 4.0 },
-                { 5.5, false, 5.0 },
-            };
+        public static PiecewiseFunction RoundMidpointToEven => new PiecewiseFunction
+        {
+            { 0.5, true, 0.0 },
+            { 1.5, false, 1.0 },
+            { 2.5, true, 2.0 },
+            { 3.5, false, 3.0 },
+            { 4.5, true, 4.0 },
+            { 5.5, false, 5.0 },
+        };
 
-            this.Even = new PiecewiseFunction
-            {
-                { 0.0, false, 0.0 },
-                { 1.0, false, 1.0 },
-                { 2.0, false, 0.0 },
-                { 3.0, false, 1.0 },
-                { 4.0, false, 0.0 },
-                { 5.0, false, 1.0 },
-                { 6.0, false, 0.0 },
-                { 7.0, false, 1.0 },
-                { 8.0, false, 0.0 },
-                { 9.0, false, 1.0 },
-                { 10.0, false, 0.0 }
-            };
+        public static PiecewiseFunction Even => new PiecewiseFunction
+        {
+            { 0.0, false, 0.0 },
+            { 1.0, false, 1.0 },
+            { 2.0, false, 0.0 },
+            { 3.0, false, 1.0 },
+            { 4.0, false, 0.0 },
+            { 5.0, false, 1.0 },
+            { 6.0, false, 0.0 },
+            { 7.0, false, 1.0 },
+            { 8.0, false, 0.0 },
+            { 9.0, false, 1.0 },
+            { 10.0, false, 0.0 }
+        };
 
-            this.LessThanFive = new PiecewiseFunction { { 5.0, false, 1.0 } };
+        public static PiecewiseFunction LessThanFive => new PiecewiseFunction { { 5.0, false, 1.0 } };
 
-            this.LessThanOrEqualToFive = new PiecewiseFunction { { 5.0, 1.0 } };
+        public static PiecewiseFunction LessThanOrEqualToFive => new PiecewiseFunction { { 5.0, 1.0 } };
 
-            this.GreaterThanFive = new PiecewiseFunction { { 5.0, true, 0.0 }, { double.MaxValue, 1.0 } };
+        public static PiecewiseFunction GreaterThanFive => new PiecewiseFunction { { 5.0, true, 0.0 }, { double.MaxValue, 1.0 } };
 
-            this.GreaterThanOrEqualToFive = new PiecewiseFunction { { 5.0, false, 0.0 }, { double.MaxValue, 1.0 } };
+        public static PiecewiseFunction GreaterThanOrEqualToFive => new PiecewiseFunction { { 5.0, false, 0.0 }, { double.MaxValue, 1.0 } };
 
-            this.LessThanTwo = new PiecewiseFunction { { 2.0, false, 1.0 } };
+        public static PiecewiseFunction LessThanTwo => new PiecewiseFunction { { 2.0, false, 1.0 } };
 
-            this.LessThanOrEqualToTwo = new PiecewiseFunction { { 2.0, 1.0 } };
+        public static PiecewiseFunction LessThanOrEqualToTwo => new PiecewiseFunction { { 2.0, 1.0 } };
 
-            this.TwoIfLessThanTwo = new PiecewiseFunction { { 2.0, false, 2.0 } };
+        public static PiecewiseFunction TwoIfLessThanTwo => new PiecewiseFunction { { 2.0, false, 2.0 } };
 
-            this.TwoIfLessThanOrEqualToTwo = new PiecewiseFunction { { 2.0, 2.0 } };
+        public static PiecewiseFunction TwoIfLessThanOrEqualToTwo => new PiecewiseFunction { { 2.0, 2.0 } };
 
-            this.GreaterThanTwo = new PiecewiseFunction { { 2.0, true, 0.0 }, { double.MaxValue, 1.0 } };
+        public static PiecewiseFunction GreaterThanTwo => new PiecewiseFunction { { 2.0, true, 0.0 }, { double.MaxValue, 1.0 } };
 
-            this.GreaterThanOrEqualToTwo = new PiecewiseFunction { { 2.0, false, 0.0 }, { double.MaxValue, 1.0 } };
+        public static PiecewiseFunction GreaterThanOrEqualToTwo => new PiecewiseFunction { { 2.0, false, 0.0 }, { double.MaxValue, 1.0 } };
 
-            this.TwoIfGreaterThanTwo = new PiecewiseFunction { { 2.0, true, 0.0 }, { double.MaxValue, 2.0 } };
+        public static PiecewiseFunction TwoIfGreaterThanTwo => new PiecewiseFunction { { 2.0, true, 0.0 }, { double.MaxValue, 2.0 } };
 
-            this.TwoIfGreaterThanOrEqualToTwo = new PiecewiseFunction { { 2.0, false, 0.0 }, { double.MaxValue, 2.0 } };
+        public static PiecewiseFunction TwoIfGreaterThanOrEqualToTwo => new PiecewiseFunction { { 2.0, false, 0.0 }, { double.MaxValue, 2.0 } };
+        #endregion
 
-            this.Zero = new PiecewiseFunction { { double.MaxValue, 0.0 } };
-        }
-
-        public PiecewiseFunction Zero { get; private set; }
-
-        public PiecewiseFunction StepUpIncludeRight { get; private set; }
-
-        public PiecewiseFunction StepUpIncludeLeft { get; private set; }
-
-        public PiecewiseFunction StepDownIncludeRight { get; private set; }
-
-        public PiecewiseFunction StepDownIncludeLeft { get; private set; }
-
-        public PiecewiseFunction Floor { get; private set; }
-
-        public PiecewiseFunction Ceiling { get; private set; }
-
-        public PiecewiseFunction Round { get; private set; }
-
-        public PiecewiseFunction RoundMidpointUp { get; private set; }
-
-        public PiecewiseFunction RoundMidpointToEven { get; private set; }
-
-        public PiecewiseFunction LessThanFive { get; private set; }
-
-        public PiecewiseFunction LessThanOrEqualToFive { get; private set; }
-
-        public PiecewiseFunction GreaterThanFive { get; private set; }
-
-        public PiecewiseFunction GreaterThanOrEqualToFive { get; private set; }
-
-        public PiecewiseFunction LessThanTwo { get; private set; }
-
-        public PiecewiseFunction LessThanOrEqualToTwo { get; private set; }
-
-        public PiecewiseFunction GreaterThanTwo { get; private set; }
-
-        public PiecewiseFunction GreaterThanOrEqualToTwo { get; private set; }
-
-        public PiecewiseFunction TwoIfLessThanTwo { get; private set; }
-
-        public PiecewiseFunction TwoIfLessThanOrEqualToTwo { get; private set; }
-
-        public PiecewiseFunction TwoIfGreaterThanTwo { get; private set; }
-
-        public PiecewiseFunction TwoIfGreaterThanOrEqualToTwo { get; private set; }
-
-        public PiecewiseFunction Even { get; private set; }
-
-        public void VerifyUpperBound(PiecewiseFunction function, double upperBound, bool includeUpperBound, bool second)
+        #region Helper Asserts
+        public static void VerifyUpperBound(PiecewiseFunction function, double upperBound, bool includeUpperBound, bool second)
         {
             var found = false;
 
@@ -219,73 +173,77 @@
             Assert.IsTrue(found, "Did not find " + (second ? "second " : string.Empty) + "piece with upper bound of '" + upperBound + "'.");
         }
 
-        public void VerifyMaxValuePiece(PiecewiseFunction function, double expectedValue, double lowerBound, bool includeLowerBound)
+        public static void VerifyMaxValuePiece(PiecewiseFunction function, double expectedValue, double lowerBound, bool includeLowerBound)
         {
             Assert.Greater(function.Count, 1);
             Assert.AreEqual(lowerBound, function[function.Count - 2].UpperBound);
             Assert.AreNotEqual(includeLowerBound, function[function.Count - 2].IncludeUpperBound);
 
-            this.VerifyMaxValuePiece(function, expectedValue);
+            VerifyMaxValuePiece(function, expectedValue);
         }
 
-        public void VerifyMaxValuePiece(PiecewiseFunction function, double expectedValue)
+        public static void VerifyMaxValuePiece(PiecewiseFunction function, double expectedValue)
         {
             Assert.AreEqual(double.MaxValue, function.Last().UpperBound);
             Assert.AreEqual(true, function.Last().IncludeUpperBound);
             Assert.AreEqual(expectedValue, function.Last().Value);
         }
 
-        public void VerifyConstantFunction(PiecewiseFunction function, double expectedConstantValue)
+        public static void VerifyConstantFunction(PiecewiseFunction function, double expectedConstantValue)
         {
             Assert.AreEqual(1, function.Count);
             Assert.AreEqual(double.MaxValue, function[0].UpperBound);
             Assert.AreEqual(true, function[0].IncludeUpperBound);
             Assert.AreEqual(expectedConstantValue, function[0].Value);
         }
+        #endregion
     }
 
     [TestFixture]
-    public class IsEquivalent : PiecewiseFunctionTest
+    public class IsEquivalent 
     {
-        public object[] Functions { get; private set; }
-
-        public IEnumerable<PiecewiseFunction> GetFunctions() => new List<PiecewiseFunction>
+        public static IEnumerable<TestCaseData> PiecewiseFunctions()
         {
-            this.Zero,
-            this.StepUpIncludeRight,
-            this.StepUpIncludeLeft,
-            this.StepDownIncludeRight,
-            this.StepDownIncludeLeft,
-            this.Floor,
-            this.Ceiling,
-            this.Round,
-            this.RoundMidpointUp,
-            this.RoundMidpointToEven,
-            this.LessThanFive,
-            this.LessThanOrEqualToFive,
-            this.GreaterThanFive,
-            this.GreaterThanOrEqualToFive,
-            this.LessThanTwo,
-            this.LessThanOrEqualToTwo,
-            this.GreaterThanTwo,
-            this.GreaterThanOrEqualToTwo,
-            this.TwoIfLessThanTwo,
-            this.TwoIfLessThanOrEqualToTwo,
-            this.TwoIfGreaterThanTwo,
-            this.TwoIfGreaterThanOrEqualToTwo,
-            this.Even
-        };
-
+            var functions = new List<PiecewiseFunction>
+            {
+                TestHelpers.Zero,
+                TestHelpers.StepUpIncludeRight,
+                TestHelpers.StepUpIncludeLeft,
+                TestHelpers.StepDownIncludeRight,
+                TestHelpers.StepDownIncludeLeft,
+                TestHelpers.Floor,
+                TestHelpers.Ceiling,
+                TestHelpers.Round,
+                TestHelpers.RoundMidpointUp,
+                TestHelpers.RoundMidpointToEven,
+                TestHelpers.LessThanFive,
+                TestHelpers.LessThanOrEqualToFive,
+                TestHelpers.GreaterThanFive,
+                TestHelpers.GreaterThanOrEqualToFive,
+                TestHelpers.LessThanTwo,
+                TestHelpers.LessThanOrEqualToTwo,
+                TestHelpers.GreaterThanTwo,
+                TestHelpers.GreaterThanOrEqualToTwo,
+                TestHelpers.TwoIfLessThanTwo,
+                TestHelpers.TwoIfLessThanOrEqualToTwo,
+                TestHelpers.TwoIfGreaterThanTwo,
+                TestHelpers.TwoIfGreaterThanOrEqualToTwo,
+                TestHelpers.Even
+            };
+            foreach (var function in functions)
+            {
+                yield return new TestCaseData(function);
+            }
+        }
         [Test]
         public void ReturnsTrueForEmptyFunctionAndZeroValuedFunction()
         {
             var emptyFunction = new PiecewiseFunction();
 
-            Assert.IsTrue(this.Zero.IsEquivalent(emptyFunction));
-            Assert.IsTrue(emptyFunction.IsEquivalent(this.Zero));
+            Assert.IsTrue(TestHelpers.Zero.IsEquivalent(emptyFunction));
+            Assert.IsTrue(emptyFunction.IsEquivalent(TestHelpers.Zero));
         }
-
-        [Test, TestCaseSource(nameof(GetFunctions))]
+        [TestCaseSource(nameof(PiecewiseFunctions))]
         public void ReturnsTrueForCopiedFunction(PiecewiseFunction function)
         {
             var copiedFunction = new PiecewiseFunction(function);
@@ -462,7 +420,7 @@
     }
 
     [TestFixture]
-    public class HasOverlap : PiecewiseFunctionTest
+    public class HasOverlap 
     {
         [Test]
         public void ReturnsFalseForTwoFunctionsThatAreNeverTrue()
@@ -515,53 +473,49 @@
     }
 
     [TestFixture]
-    public class AddFunction : PiecewiseFunctionTest
+    public class AddFunction 
     {
         [Test]
         [TestCase(-1.0, 1.0, null)]
         [TestCase(-1.0, 1.0, true)]
         [TestCase(-1.0, 1.0, false)]
-        [ExpectedException]
         public void DoesNotAllowPiecesThatGoBackwards(double upperBound, double value, bool? includeUpperBound)
         {
             var function = new PiecewiseFunction { { 0.0, true, 0.0 } };
 
             if (includeUpperBound.HasValue)
             {
-                function.Add(upperBound, includeUpperBound.Value, value);
+                Assert.Throws<ArgumentException>(()=>function.Add(upperBound, includeUpperBound.Value, value));
             }
             else
             {
-                function.Add(upperBound, value);
+                Assert.Throws<ArgumentException>(() => function.Add(upperBound, value));
             }
         }
 
         [Test]
-        [ExpectedException]
         public void DoesNotAllowPiecesWithValueNaN()
         {
-            var function = new PiecewiseFunction { { 0.0, true, double.NaN } };
+            Assert.Throws<ArgumentException>(() => new PiecewiseFunction { { 0.0, true, double.NaN } });
         }
 
         [Test]
-        [ExpectedException]
         public void DoesNotAllowPiecesWithUpperBoundNaN()
         {
-            var function = new PiecewiseFunction { { double.NaN, true, 0.0 } };
+            Assert.Throws<ArgumentException>(() => new PiecewiseFunction { { double.NaN, true, 0.0 } });
         }
 
         [Test]
         [TestCase(double.PositiveInfinity)]
         [TestCase(double.NegativeInfinity)]
-        [ExpectedException]
         public void DoesNotAllowPiecesWithInfiniteUpperBound(double value)
         {
-            var function = new PiecewiseFunction { { value, true, 0.0 } };
+            Assert.Throws<ArgumentException>(() => new PiecewiseFunction { { value, true, 0.0 } });
         }
     }
 
     [TestFixture]
-    public class AddManyFunction : PiecewiseFunctionTest
+    public class AddManyFunction 
     {
         [Test]
         public void HandlesEmptyInput()
@@ -574,7 +528,7 @@
         [Test]
         public void AddsValuesForTwoFunctions()
         {
-            var result = PiecewiseFunction.AddMany(new[] { this.Floor, this.Round });
+            var result = PiecewiseFunction.AddMany(new[] { TestHelpers.Floor, TestHelpers.Round });
 
             Assert.AreEqual(0.0, result.GetValue(0.25));
             Assert.AreEqual(1.0, result.GetValue(0.75));
@@ -590,7 +544,7 @@
         }
     }
 
-    public class GetValueFunction : PiecewiseFunctionTest
+    public class GetValueFunction 
     {
         [Test]
         public void GetsTheRightValue()
@@ -626,7 +580,7 @@
     }
 
     [TestFixture]
-    public class PlusOperator : PiecewiseFunctionTest
+    public class PlusOperator 
     {
         [Test]
         [TestCase(-1.0)]
@@ -667,7 +621,7 @@
 
             var combined = function + 2.0;
 
-            this.VerifyUpperBound(combined, upperBound, includeUpperBound, false);
+            TestHelpers.VerifyUpperBound(combined, upperBound, includeUpperBound, false);
         }
 
         [Test]
@@ -677,12 +631,12 @@
 
             var combined = function + 2.0;
 
-            this.VerifyMaxValuePiece(combined, 2.0, 20.0, false);
+            TestHelpers.VerifyMaxValuePiece(combined, 2.0, 20.0, false);
         }
     }
 
     [TestFixture]
-    public class PlusPiecewiseFunctionOperator : PiecewiseFunctionTest
+    public class PlusPiecewiseFunctionOperator 
     {
         [Test]
         [TestCase(double.MinValue, 1.0)]
@@ -695,7 +649,7 @@
         [TestCase(double.MaxValue, 1.0)]
         public void GetsCorrectValues(double xValue, double yValue)
         {
-            var function = this.GreaterThanTwo + this.LessThanFive;
+            var function = TestHelpers.GreaterThanTwo + TestHelpers.LessThanFive;
 
             Assert.AreEqual(yValue, function.GetValue(xValue));
         }
@@ -723,7 +677,7 @@
         [TestCase(5.00001, 0.0)]
         public void GetsCorrectValuesForMismatchedUpperBound(double xValue, double yValue)
         {
-            var function = this.StepDownIncludeLeft + this.StepUpIncludeRight;
+            var function = TestHelpers.StepDownIncludeLeft + TestHelpers.StepUpIncludeRight;
 
             Assert.AreEqual(yValue, function.GetValue(xValue));
         }
@@ -732,19 +686,19 @@
         public void HandlesMismatchedUpperBoundsAtTheEndOfAFunction()
         {
             // Both end at 5.0, but one includes it and the other does not
-            var function = this.LessThanFive + this.LessThanOrEqualToFive;
+            var function = TestHelpers.LessThanFive + TestHelpers.LessThanOrEqualToFive;
 
             Assert.AreEqual(2.0, function.GetValue(4.99999));
             Assert.AreEqual(1.0, function.GetValue(5.0));
             Assert.AreEqual(0.0, function.GetValue(5.00001));
 
-            this.VerifyUpperBound(function, 5.0, false, false);
-            this.VerifyUpperBound(function, 5.0, true, true);
+            TestHelpers.VerifyUpperBound(function, 5.0, false, false);
+            TestHelpers.VerifyUpperBound(function, 5.0, true, true);
 
-            function = this.LessThanOrEqualToFive + this.LessThanFive;
+            function = TestHelpers.LessThanOrEqualToFive + TestHelpers.LessThanFive;
 
-            this.VerifyUpperBound(function, 5.0, false, false);
-            this.VerifyUpperBound(function, 5.0, true, true);
+            TestHelpers.VerifyUpperBound(function, 5.0, false, false);
+            TestHelpers.VerifyUpperBound(function, 5.0, true, true);
 
             Assert.AreEqual(2.0, function.GetValue(4.99999));
             Assert.AreEqual(1.0, function.GetValue(5.0));
@@ -754,14 +708,14 @@
         [Test]
         public void ExtendsResultToDoubleMaxValue()
         {
-            var function = this.LessThanFive + this.LessThanOrEqualToFive;
+            var function = TestHelpers.LessThanFive + TestHelpers.LessThanOrEqualToFive;
 
-            this.VerifyMaxValuePiece(function, 0.0, 5.0, false);
+            TestHelpers.VerifyMaxValuePiece(function, 0.0, 5.0, false);
         }
     }
 
     [TestFixture]
-    public class SubtractDoubleOperator : PiecewiseFunctionTest
+    public class SubtractDoubleOperator 
     {
         [Test]
         [TestCase(-1.0)]
@@ -802,7 +756,7 @@
 
             var combined = function - 2.0;
 
-            this.VerifyUpperBound(combined, upperBound, includeUpperBound, false);
+            TestHelpers.VerifyUpperBound(combined, upperBound, includeUpperBound, false);
         }
 
         [Test]
@@ -812,12 +766,12 @@
 
             var combined = function - 2.0;
 
-            this.VerifyMaxValuePiece(combined, -2.0, 20.0, false);
+            TestHelpers.VerifyMaxValuePiece(combined, -2.0, 20.0, false);
         }
     }
 
     [TestFixture]
-    public class MultiplyDoubleOperator : PiecewiseFunctionTest
+    public class MultiplyDoubleOperator 
     {
         [Test]
         [TestCase(-1.0)]
@@ -858,7 +812,7 @@
 
             var combined = function * 2.0;
 
-            this.VerifyUpperBound(combined, upperBound, includeUpperBound, false);
+            TestHelpers.VerifyUpperBound(combined, upperBound, includeUpperBound, false);
         }
 
         [Test]
@@ -868,11 +822,11 @@
 
             var combined = function * 2.0;
 
-            this.VerifyMaxValuePiece(combined, 0.0, 20.0, false);
+            TestHelpers.VerifyMaxValuePiece(combined, 0.0, 20.0, false);
         }
     }
 
-    public abstract class InequalityTest : PiecewiseFunctionTest
+    public abstract class InequalityTest 
     {
         public abstract PiecewiseFunction RunOperation(PiecewiseFunction first, PiecewiseFunction second);
 
@@ -885,13 +839,13 @@
         [Test]
         public void GetsCorrectValuesWithinPieces()
         {
-            var function = this.RunOperation(this.LessThanOrEqualToFive, this.GreaterThanTwo);
+            var function = this.RunOperation(TestHelpers.LessThanOrEqualToFive, TestHelpers.GreaterThanTwo);
 
             Assert.AreEqual(this.GreaterThan ? 1.0 : 0.0, function.GetValue(1.0));
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, function.GetValue(3.5));
             Assert.AreEqual(this.LessThan ? 1.0 : 0.0, function.GetValue(6.0));
 
-            var reverseFunction = this.RunOperation(this.GreaterThanTwo, this.LessThanOrEqualToFive);
+            var reverseFunction = this.RunOperation(TestHelpers.GreaterThanTwo, TestHelpers.LessThanOrEqualToFive);
 
             Assert.AreEqual(this.LessThan ? 1.0 : 0.0, reverseFunction.GetValue(1.0));
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, reverseFunction.GetValue(3.5));
@@ -901,12 +855,12 @@
         [Test]
         public void GetsCorrectValueWhenOneFunctionEndsAndIncludesRight()
         {
-            var function = this.RunOperation(this.LessThanOrEqualToFive, this.GreaterThanTwo);
+            var function = this.RunOperation(TestHelpers.LessThanOrEqualToFive, TestHelpers.GreaterThanTwo);
 
             Assert.AreEqual(this.GreaterThan ? 1.0 : 0.0, function.GetValue(2.0));
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, function.GetValue(5.0));
 
-            var reverseFunction = this.RunOperation(this.GreaterThanTwo, this.LessThanOrEqualToFive);
+            var reverseFunction = this.RunOperation(TestHelpers.GreaterThanTwo, TestHelpers.LessThanOrEqualToFive);
 
             Assert.AreEqual(this.LessThan ? 1.0 : 0.0, reverseFunction.GetValue(2.0));
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, reverseFunction.GetValue(5.0));
@@ -915,75 +869,75 @@
         [Test]
         public void GetsCorrectValueWhenOneFunctionEndsAndDoesNotIncludeRight()
         {
-            var function = this.RunOperation(this.LessThanFive, this.GreaterThanOrEqualToTwo);
+            var function = this.RunOperation(TestHelpers.LessThanFive, TestHelpers.GreaterThanOrEqualToTwo);
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, function.GetValue(2.0));
 
-            var greaterThanOrEqualsFunction = this.RunOperation(this.GreaterThanOrEqualToTwo, this.GreaterThanOrEqualToFive);
+            var greaterThanOrEqualsFunction = this.RunOperation(TestHelpers.GreaterThanOrEqualToTwo, TestHelpers.GreaterThanOrEqualToFive);
             Assert.AreEqual(this.GreaterThan ? 1.0 : 0.0, greaterThanOrEqualsFunction.GetValue(2.0));
 
-            var lessThanFunction = this.RunOperation(this.LessThanTwo, this.LessThanFive);
+            var lessThanFunction = this.RunOperation(TestHelpers.LessThanTwo, TestHelpers.LessThanFive);
             Assert.AreEqual(this.LessThan ? 1.0 : 0.0, lessThanFunction.GetValue(2.0));
         }
 
         [Test]
         public void GetsCorrectValueWhenBothFunctionsEndAndIncludeRight()
         {
-            var sameValueFunctions = this.RunOperation(this.LessThanOrEqualToTwo, this.LessThanOrEqualToTwo);
+            var sameValueFunctions = this.RunOperation(TestHelpers.LessThanOrEqualToTwo, TestHelpers.LessThanOrEqualToTwo);
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, sameValueFunctions.GetValue(2.0));
 
-            var firstGreater = this.RunOperation(this.TwoIfLessThanOrEqualToTwo, this.LessThanOrEqualToTwo);
+            var firstGreater = this.RunOperation(TestHelpers.TwoIfLessThanOrEqualToTwo, TestHelpers.LessThanOrEqualToTwo);
             Assert.AreEqual(this.GreaterThan ? 1.0 : 0.0, firstGreater.GetValue(2.0));
 
-            var firstLesser = this.RunOperation(this.LessThanOrEqualToTwo, this.TwoIfLessThanOrEqualToTwo);
+            var firstLesser = this.RunOperation(TestHelpers.LessThanOrEqualToTwo, TestHelpers.TwoIfLessThanOrEqualToTwo);
             Assert.AreEqual(this.LessThan ? 1.0 : 0.0, firstLesser.GetValue(2.0));
         }
 
         [Test]
         public void GetsCorrectValueWhenBothFunctionsEndAndDoNotIncludeRight()
         {
-            var sameValueFunctions = this.RunOperation(this.GreaterThanOrEqualToTwo, this.Even);
+            var sameValueFunctions = this.RunOperation(TestHelpers.GreaterThanOrEqualToTwo, TestHelpers.Even);
             Assert.AreEqual(this.EqualTo ? 1.0 : 0.0, sameValueFunctions.GetValue(2.0));
 
-            var firstGreater = this.RunOperation(this.TwoIfGreaterThanOrEqualToTwo, this.GreaterThanOrEqualToTwo);
+            var firstGreater = this.RunOperation(TestHelpers.TwoIfGreaterThanOrEqualToTwo, TestHelpers.GreaterThanOrEqualToTwo);
             Assert.AreEqual(this.GreaterThan ? 1.0 : 0.0, firstGreater.GetValue(2.0));
 
-            var firstLesser = this.RunOperation(this.GreaterThanOrEqualToTwo, this.TwoIfGreaterThanOrEqualToTwo);
+            var firstLesser = this.RunOperation(TestHelpers.GreaterThanOrEqualToTwo, TestHelpers.TwoIfGreaterThanOrEqualToTwo);
             Assert.AreEqual(this.LessThan ? 1.0 : 0.0, firstLesser.GetValue(2.0));
         }
 
         [Test]
         public void ExtendsFirstFunctionToDoubleMaxValue()
         {
-            var negativeOneIfGreaterThanFive = this.GreaterThanFive * -1.0;
-            var greaterThanFunction = this.RunOperation(this.LessThanTwo, negativeOneIfGreaterThanFive);
-            this.VerifyMaxValuePiece(greaterThanFunction, this.GreaterThan ? 1.0 : 0.0);
+            var negativeOneIfGreaterThanFive = TestHelpers.GreaterThanFive * -1.0;
+            var greaterThanFunction = this.RunOperation(TestHelpers.LessThanTwo, negativeOneIfGreaterThanFive);
+            TestHelpers.VerifyMaxValuePiece(greaterThanFunction, this.GreaterThan ? 1.0 : 0.0);
 
-            var lessThanFunction = this.RunOperation(this.LessThanOrEqualToTwo, this.GreaterThanFive);
-            this.VerifyMaxValuePiece(lessThanFunction, this.LessThan ? 1.0 : 0.0);
+            var lessThanFunction = this.RunOperation(TestHelpers.LessThanOrEqualToTwo, TestHelpers.GreaterThanFive);
+            TestHelpers.VerifyMaxValuePiece(lessThanFunction, this.LessThan ? 1.0 : 0.0);
 
-            var equalToFunction = this.RunOperation(this.LessThanTwo, this.Zero);
-            this.VerifyMaxValuePiece(equalToFunction, this.EqualTo ? 1.0 : 0.0);
+            var equalToFunction = this.RunOperation(TestHelpers.LessThanTwo, TestHelpers.Zero);
+            TestHelpers.VerifyMaxValuePiece(equalToFunction, this.EqualTo ? 1.0 : 0.0);
         }
 
         [Test]
         public void ExtendsSecondFunctionToDoubleMaxValue()
         {
-            var greaterThanFunction = this.RunOperation(this.GreaterThanFive, this.LessThanTwo);
-            this.VerifyMaxValuePiece(greaterThanFunction, this.GreaterThan ? 1.0 : 0.0);
+            var greaterThanFunction = this.RunOperation(TestHelpers.GreaterThanFive, TestHelpers.LessThanTwo);
+            TestHelpers.VerifyMaxValuePiece(greaterThanFunction, this.GreaterThan ? 1.0 : 0.0);
 
-            var negativeOneIfGreaterThanFive = this.GreaterThanFive * -1.0;
-            var lessThanFunction = this.RunOperation(negativeOneIfGreaterThanFive, this.LessThanTwo);
-            this.VerifyMaxValuePiece(lessThanFunction, this.LessThan ? 1.0 : 0.0);
+            var negativeOneIfGreaterThanFive = TestHelpers.GreaterThanFive * -1.0;
+            var lessThanFunction = this.RunOperation(negativeOneIfGreaterThanFive, TestHelpers.LessThanTwo);
+            TestHelpers.VerifyMaxValuePiece(lessThanFunction, this.LessThan ? 1.0 : 0.0);
 
-            var equalToFunction = this.RunOperation(this.Zero, this.LessThanTwo);
-            this.VerifyMaxValuePiece(equalToFunction, this.EqualTo ? 1.0 : 0.0);
+            var equalToFunction = this.RunOperation(TestHelpers.Zero, TestHelpers.LessThanTwo);
+            TestHelpers.VerifyMaxValuePiece(equalToFunction, this.EqualTo ? 1.0 : 0.0);
         }
 
         public void ExtendsBothFunctionsToDoubleMaxValue()
         {
-            var function = this.RunOperation(this.LessThanFive, this.LessThanTwo);
+            var function = this.RunOperation(TestHelpers.LessThanFive, TestHelpers.LessThanTwo);
 
-            this.VerifyMaxValuePiece(function, this.EqualTo ? 1.0 : 0.0, 5.0, true);
+            TestHelpers.VerifyMaxValuePiece(function, this.EqualTo ? 1.0 : 0.0, 5.0, true);
         }
     }
 
@@ -1060,7 +1014,7 @@
     }
 
     [TestFixture]
-    public class GreaterThanLinearFunctionOperator : PiecewiseFunctionTest
+    public class GreaterThanLinearFunctionOperator 
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -1228,7 +1182,7 @@
     }
 
     [TestFixture]
-    public class GreaterThanOrEqualToLinearFunctionOperator : PiecewiseFunctionTest
+    public class GreaterThanOrEqualToLinearFunctionOperator 
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -1396,7 +1350,7 @@
     }
 
     [TestFixture]
-    public class LessThanLinearFunctionOperator : PiecewiseFunctionTest
+    public class LessThanLinearFunctionOperator 
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -1565,7 +1519,7 @@
     }
 
     [TestFixture]
-    public class LessThanOrEqualToLinearFunctionOperator : PiecewiseFunctionTest
+    public class LessThanOrEqualToLinearFunctionOperator 
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -1736,7 +1690,7 @@
     }
 
     [TestFixture]
-    public class EqualToLinearFunctionOperator : PiecewiseFunctionTest
+    public class EqualToLinearFunctionOperator 
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -1924,7 +1878,7 @@
     }
 
     [TestFixture]
-    public class NotEqualToLinearFunctionOperator : PiecewiseFunctionTest
+    public class NotEqualToLinearFunctionOperator 
     {
         private PiecewiseFunction stepUpIncludeUpper;
 

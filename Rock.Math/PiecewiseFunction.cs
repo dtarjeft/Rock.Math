@@ -4,14 +4,12 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Represents a function that can be expressed by a set of pieces, where each piece has a constant value and is valid for a specific range.
     /// Functions are considered to be defined between double.MinValue and double.MaxValue.
     /// If the pieces of the function do not cover the full range, the value is assumed to be 0.0 between the end of the final piece and double.MaxValue.
     /// </summary>
-    [DataContract]
     public class PiecewiseFunction : IReadOnlyList<PiecewiseFunction.Piece>
     {
         private readonly List<Piece> pieces;
@@ -911,81 +909,82 @@
                 return false;
             }
 
-            var firstEnum = this.GetEnumerator();
-            var secondEnum = otherFunction.GetEnumerator();
-
-            var firstCurrent = firstEnum.MoveNext() ? (Piece?)firstEnum.Current : null;
-            var secondCurrent = secondEnum.MoveNext() ? (Piece?)secondEnum.Current : null;
-
-            while (firstCurrent != null && secondCurrent != null)
+            using (var firstEnum = this.GetEnumerator())
+            using (var secondEnum = otherFunction.GetEnumerator())
             {
-                if (!firstCurrent.Value.Value.ApproximatelyEquals(secondCurrent.Value.Value))
-                {
-                    return false;
-                }
+                var firstCurrent = firstEnum.MoveNext() ? (Piece?) firstEnum.Current : null;
+                var secondCurrent = secondEnum.MoveNext() ? (Piece?) secondEnum.Current : null;
 
-                if (firstCurrent.Value.UpperBound.ApproximatelyEquals(secondCurrent.Value.UpperBound))
+                while (firstCurrent != null && secondCurrent != null)
                 {
-                    // These both stop at the same point, which is tricky
-                    if (firstCurrent.Value.IncludeUpperBound == secondCurrent.Value.IncludeUpperBound)
+                    if (!firstCurrent.Value.Value.ApproximatelyEquals(secondCurrent.Value.Value))
                     {
-                        // They both also either include or do not include that point, so we can resolve them simultaneously
-                        firstCurrent = firstEnum.MoveNext() ? (Piece?)firstEnum.Current : null;
-                        secondCurrent = secondEnum.MoveNext() ? (Piece?)secondEnum.Current : null;
+                        return false;
                     }
-                    else
+
+                    if (firstCurrent.Value.UpperBound.ApproximatelyEquals(secondCurrent.Value.UpperBound))
                     {
-                        // One ends right BEFORE the given point, whereas one ends AT the given point.
-                        // We will need to move to the next item on the one that has ended, but not the other.
-                        if (firstCurrent.Value.IncludeUpperBound)
+                        // These both stop at the same point, which is tricky
+                        if (firstCurrent.Value.IncludeUpperBound == secondCurrent.Value.IncludeUpperBound)
                         {
-                            secondCurrent = secondEnum.MoveNext() ? (Piece?)secondEnum.Current : null;
+                            // They both also either include or do not include that point, so we can resolve them simultaneously
+                            firstCurrent = firstEnum.MoveNext() ? (Piece?) firstEnum.Current : null;
+                            secondCurrent = secondEnum.MoveNext() ? (Piece?) secondEnum.Current : null;
                         }
                         else
                         {
-                            firstCurrent = firstEnum.MoveNext() ? (Piece?)firstEnum.Current : null;
+                            // One ends right BEFORE the given point, whereas one ends AT the given point.
+                            // We will need to move to the next item on the one that has ended, but not the other.
+                            if (firstCurrent.Value.IncludeUpperBound)
+                            {
+                                secondCurrent = secondEnum.MoveNext() ? (Piece?) secondEnum.Current : null;
+                            }
+                            else
+                            {
+                                firstCurrent = firstEnum.MoveNext() ? (Piece?) firstEnum.Current : null;
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    // Find the next point where a section ends
-                    var nextBreakpoint = Lower(firstCurrent.Value.UpperBound, secondCurrent.Value.UpperBound);
-
-                    if (nextBreakpoint.ApproximatelyEquals(firstCurrent.Value.UpperBound))
-                    {
-                        firstCurrent = firstEnum.MoveNext() ? (Piece?)firstEnum.Current : null;
                     }
                     else
                     {
-                        secondCurrent = secondEnum.MoveNext() ? (Piece?)secondEnum.Current : null;
+                        // Find the next point where a section ends
+                        var nextBreakpoint = Lower(firstCurrent.Value.UpperBound, secondCurrent.Value.UpperBound);
+
+                        if (nextBreakpoint.ApproximatelyEquals(firstCurrent.Value.UpperBound))
+                        {
+                            firstCurrent = firstEnum.MoveNext() ? (Piece?) firstEnum.Current : null;
+                        }
+                        else
+                        {
+                            secondCurrent = secondEnum.MoveNext() ? (Piece?) secondEnum.Current : null;
+                        }
                     }
                 }
-            }
 
-            // If one of the functions continues after the other function, make sure it only has values of 0
-            while (firstCurrent != null)
-            {
-                if (!firstCurrent.Value.Value.IsApproximatelyZero())
+                // If one of the functions continues after the other function, make sure it only has values of 0
+                while (firstCurrent != null)
                 {
-                    return false;
+                    if (!firstCurrent.Value.Value.IsApproximatelyZero())
+                    {
+                        return false;
+                    }
+
+                    firstCurrent = firstEnum.MoveNext() ? (Piece?) firstEnum.Current : null;
                 }
 
-                firstCurrent = firstEnum.MoveNext() ? (Piece?)firstEnum.Current : null;
-            }
-
-            while (secondCurrent != null)
-            {
-                if (!secondCurrent.Value.Value.IsApproximatelyZero())
+                while (secondCurrent != null)
                 {
-                    return false;
+                    if (!secondCurrent.Value.Value.IsApproximatelyZero())
+                    {
+                        return false;
+                    }
+
+                    secondCurrent = secondEnum.MoveNext() ? (Piece?) secondEnum.Current : null;
                 }
 
-                secondCurrent = secondEnum.MoveNext() ? (Piece?)secondEnum.Current : null;
+                // If we get to here, they matched the whole way
+                return true;
             }
-
-            // If we get to here, they matched the whole way
-            return true;
         }
 
         /// <summary>

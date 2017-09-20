@@ -1,4 +1,4 @@
-﻿namespace PieceTests
+namespace PieceTests
 {
     using NUnit.Framework;
 
@@ -156,7 +156,7 @@
             var function = new LinearFunction(slope, yIntersect);
 
             var intersect = piece.GetIntersect(function, lower, includeLeft);
-            
+
             Assert.IsTrue(intersect.HasValue);
             Assert.AreEqual(expected, intersect.Value);
         }

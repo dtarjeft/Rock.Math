@@ -1,4 +1,4 @@
-﻿namespace LinearFunctionTests
+namespace LinearFunctionTests
 {
     using Rock.Math;
 
@@ -272,7 +272,7 @@
     }
 
     [TestFixture]
-    public class LessThanPiecewiseFunctionOperator : PiecewiseFunctionTest
+    public class LessThanPiecewiseFunctionOperator
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -440,7 +440,7 @@
     }
 
     [TestFixture]
-    public class LessThanOrEqualToPiecewiseFunctionOperator : PiecewiseFunctionTest
+    public class LessThanOrEqualToPiecewiseFunctionOperator
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -608,7 +608,7 @@
     }
 
     [TestFixture]
-    public class GreaterThanPiecewiseFunctionOperator : PiecewiseFunctionTest
+    public class GreaterThanPiecewiseFunctionOperator
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
@@ -777,7 +777,7 @@
     }
 
     [TestFixture]
-    public class GreaterThanOrEqualToPiecewiseFunctionOperator : PiecewiseFunctionTest
+    public class GreaterThanOrEqualToPiecewiseFunctionOperator
     {
         private PiecewiseFunction stepUpIncludeUpper;
 
