@@ -2060,6 +2060,25 @@ namespace PiecewiseFunctionTests
         }
 
         [Test]
+        public void GetsSlightlyLessThanUpperBoundOfSingleNonZeroPieceWhenUpperBoundIsNotIncluded()
+        {
+            var function = new PiecewiseFunction { { 1, false, 1.0 }, { double.MaxValue, 0.0 } };
+
+            Assert.AreEqual(0, function.HighestNonZeroPoint(1));
+        }
+
+        [TestCase(100.0, true, 1.0)]
+        [TestCase(100.0, false, 1.0)]
+        [TestCase(0.0, false, 1.0)]
+        [TestCase(-100.0, false, 1.0)]
+        public void GetsNonZeroValueOfSingleNonZeroPiece(double upperBound, bool includeUpperBound, double value)
+        {
+            var function = new PiecewiseFunction { { upperBound, includeUpperBound, value }, { double.MaxValue, 0.0 } };
+
+            Assert.AreEqual(value, function.GetValue(function.HighestNonZeroPoint()));
+        }
+
+        [Test]
         public void GetsUpperBoundOfHigherOfTwoAdjacentNonZeroPieces()
         {
             var function = new PiecewiseFunction { { 5.0, 0.0 }, { 10.0, 2.0 }, { 15.0, 1.0 } };
@@ -2073,6 +2092,18 @@ namespace PiecewiseFunctionTests
             var function = new PiecewiseFunction { { 10.0, 1.0 }, { 20.0, 0.0 }, { 30.0, 1.0 } };
 
             Assert.AreEqual(30.0, function.HighestNonZeroPoint());
+        }
+
+        [TestCase(30.0)]
+        [TestCase(10.0)]
+        [TestCase(0.0)]
+        [TestCase(-30.0)]
+        [TestCase(5.0)]
+        public void UpperBoundOfHigherOfTwoNonAdjacentNonZeroPiecesGetsShiftedWhenUpperBoundIsNotIncluded(double upperBound)
+        {
+            var function = new PiecewiseFunction { { upperBound - 20.0, 1.0 }, { upperBound - 10.0, 0.0 }, { upperBound, false, 1.0 } };
+
+            Assert.Less(function.HighestNonZeroPoint(), upperBound);
         }
 
         [Test]
@@ -2115,6 +2146,7 @@ namespace PiecewiseFunctionTests
         {
             var function = new PiecewiseFunction { { 100.0, 0.0 }, { double.MaxValue, 1.0 } };
 
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
             Assert.AreEqual(100.0, function.HighestZeroPoint());
         }
 
@@ -2123,6 +2155,7 @@ namespace PiecewiseFunctionTests
         {
             var function = new PiecewiseFunction { { 5.0, 0.0 }, { 10.0, 0.0 }, { double.MaxValue, 1.0 } };
 
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
             Assert.AreEqual(10.0, function.HighestZeroPoint());
         }
 
@@ -2131,14 +2164,55 @@ namespace PiecewiseFunctionTests
         {
             var function = new PiecewiseFunction { { 10.0, 0.0 }, { 20.0, 1.0 }, { 30.0, 0.0 }, { double.MaxValue, 1.0 } };
 
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
             Assert.AreEqual(30.0, function.HighestZeroPoint());
+        }
+
+        [Test]
+        public void GetsUpperBoundOfSingleZeroPieceNonIncludedUpperBound()
+        {
+            var function = new PiecewiseFunction { { 100.0, false, 0.0 }, { double.MaxValue, 1.0 } };
+
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
+            Assert.Greater(100.0, function.HighestZeroPoint());
+        }
+
+        [Test]
+        public void GetsUpperBoundOfHigherOfTwoAdjacentZeroPiecesNonIncludedUpperBound()
+        {
+            var function = new PiecewiseFunction { { 5.0, 0.0 }, { 10.0, false, 0.0 }, { double.MaxValue, 1.0 } };
+
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
+            Assert.Greater(10.0, function.HighestZeroPoint());
+        }
+
+        [Test]
+        public void GetsUpperBoundOfHigherOfTwoNonAdjacentZeroPiecesNonIncludedUpperBound()
+        {
+            var function = new PiecewiseFunction { { 10.0, 0.0 }, { 20.0, 1.0 }, { 30.0, false, 0.0 }, { double.MaxValue, 1.0 } };
+
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
+            Assert.Greater(30.0, function.HighestZeroPoint());
         }
 
         [Test]
         public void GetsSinglePointWithZeroWidth()
         {
             var function = new PiecewiseFunction { { 100.0, false, 1.0 }, { 100.0, true, 0.0 }, { double.MaxValue, 1.0 } };
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
             Assert.AreEqual(100.0, function.HighestZeroPoint());
+        }
+
+        [TestCase(30.0)]
+        [TestCase(10.0)]
+        [TestCase(0.0)]
+        [TestCase(-30.0)]
+        [TestCase(5.0)]
+        public void UpperBoundOfHigherOfTwoNonAdjacentNonZeroPiecesGetsShiftedWhenUpperBoundIsNotIncluded(double upperBound)
+        {
+            var function = new PiecewiseFunction { { upperBound - 20.0, 1.0 }, { upperBound - 10.0, false, 0.0 }, { double.MaxValue, 1.0 } };
+            Assert.AreEqual(0.0, function.GetValue(function.HighestZeroPoint()));
+            Assert.Less(function.HighestZeroPoint(), upperBound);
         }
 
         [Test]
@@ -2182,33 +2256,55 @@ namespace PiecewiseFunctionTests
         [Test]
         public void GetsLowerBoundOfSingleNonZeroPiece()
         {
-            var function = new PiecewiseFunction { { 5.0, 0.0 }, { 10.0, 1.0 } };
+            var function = new PiecewiseFunction { { 5.0, false, 0.0 }, { 10.0, 1.0 } };
 
             Assert.AreEqual(5.0, function.LowestNonZeroPoint());
+            Assert.AreEqual(1.0, function.GetValue(function.LowestNonZeroPoint()));
         }
 
         [Test]
         public void GetsLowerBoundOfLowerOfTwoAdjacentNonZeroPieces()
         {
-            var function = new PiecewiseFunction { { 10.0, 0.0 }, { 20.0, 1.0 }, { 30.0, 1.0 } };
+            var function = new PiecewiseFunction { { 10.0, false, 0.0 }, { 20.0, 1.0 }, { 30.0, 1.0 } };
 
             Assert.AreEqual(10.0, function.LowestNonZeroPoint());
+            Assert.AreEqual(1.0, function.GetValue(function.LowestNonZeroPoint()));
         }
 
         [Test]
         public void GetsLowerBoundOfLowerOfTwoNonAdjacentNonZeroPieces()
         {
-            var function = new PiecewiseFunction { { 50.0, 0.0 }, { 75.0, 1.0 }, { 125.0, 0.0 }, { 200.0, 1.0 } };
+            var function = new PiecewiseFunction { { 50.0, false, 0.0 }, { 75.0, 1.0 }, { 125.0, 0.0 }, { 200.0, 1.0 } };
 
             Assert.AreEqual(50.0, function.LowestNonZeroPoint());
+            Assert.AreEqual(1.0, function.GetValue(function.LowestNonZeroPoint()));
+        }
+
+        [TestCase(30.0)]
+        [TestCase(10.0)]
+        [TestCase(5.0)]
+        [TestCase(0.0)]
+        [TestCase(-5.0)]
+        [TestCase(-10.0)]
+        [TestCase(-30.0)]
+        public void GetsLowerBoundOfLowestNonZeroPieceWhenUpperBoundIsIncludedOnPieceBelowIt(double upperBound)
+        {
+            var function = new PiecewiseFunction { { upperBound - 10.0, 0.0 }, { upperBound, false, 1.0 }, { upperBound + 10, false, 1.0 } };
+
+            Assert.AreEqual(1.0, function.GetValue(function.LowestNonZeroPoint()));
+            Assert.Greater(function.LowestNonZeroPoint(), upperBound - 10.0);
         }
 
         [Test]
         public void GetsSinglePointWithZeroWidth()
         {
             var function = new PiecewiseFunction { { 100.0, false, 0.0 }, { 100.0, true, 1.0 }, { double.MaxValue, 0.0 } };
+
+            Assert.AreEqual(1.0, function.GetValue(function.LowestNonZeroPoint()));
             Assert.AreEqual(100.0, function.LowestNonZeroPoint());
         }
+
+
 
         [Test]
         [TestCase(double.MaxValue, true)]
@@ -2239,34 +2335,74 @@ namespace PiecewiseFunctionTests
     public class LowestZeroPoint
     {
         [Test]
+        public void GetsLowerBoundOfSingleZeroPieceNonIncludedUpperBound()
+        {
+            var function = new PiecewiseFunction { { 5.0, false, 1.0 }, { 10.0, 0.0 } };
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
+            Assert.AreEqual(5.0, function.LowestZeroPoint());
+        }
+
+        [Test]
+        public void GetsLowerBoundOfLowerOfTwoAdjacentZeroPiecesNonIncludedUpperBound()
+        {
+            var function = new PiecewiseFunction { { 10.0, false, 1.0 }, { 20.0, 0.0 }, { 30.0, 0.0 } };
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
+            Assert.AreEqual(10.0, function.LowestZeroPoint());
+        }
+
+        [Test]
+        public void GetsLowerBoundOfLowerOfTwoNonAdjacentZeroPiecesNonIncludedUpperBound()
+        {
+            var function = new PiecewiseFunction { { 50.0, false, 1.0 }, { 75.0, 0.0 }, { 125.0, 1.0 }, { 200.0, 0.0 } };
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
+            Assert.AreEqual(50.0, function.LowestZeroPoint());
+        }
+
+        [Test]
         public void GetsLowerBoundOfSingleZeroPiece()
         {
             var function = new PiecewiseFunction { { 5.0, 1.0 }, { 10.0, 0.0 } };
-
-            Assert.AreEqual(5.0, function.LowestZeroPoint());
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
+            Assert.Less(5.0, function.LowestZeroPoint());
         }
 
         [Test]
         public void GetsLowerBoundOfLowerOfTwoAdjacentZeroPieces()
         {
             var function = new PiecewiseFunction { { 10.0, 1.0 }, { 20.0, 0.0 }, { 30.0, 0.0 } };
-
-            Assert.AreEqual(10.0, function.LowestZeroPoint());
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
+            Assert.Less(10.0, function.LowestZeroPoint());
         }
 
         [Test]
         public void GetsLowerBoundOfLowerOfTwoNonAdjacentZeroPieces()
         {
             var function = new PiecewiseFunction { { 50.0, 1.0 }, { 75.0, 0.0 }, { 125.0, 1.0 }, { 200.0, 0.0 } };
-
-            Assert.AreEqual(50.0, function.LowestZeroPoint());
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
+            Assert.Less(50.0, function.LowestZeroPoint());
         }
 
         [Test]
         public void GetsSinglePointWithZeroWidth()
         {
             var function = new PiecewiseFunction { { 100.0, false, 1.0 }, { 100.0, true, 0.0 }, { double.MaxValue, 1.0 } };
+            Assert.AreEqual(0.0, function.GetValue(function.LowestZeroPoint()));
             Assert.AreEqual(100.0, function.LowestZeroPoint());
+        }
+
+        [TestCase(30.0)]
+        [TestCase(10.0)]
+        [TestCase(5.0)]
+        [TestCase(0.0)]
+        [TestCase(-5.0)]
+        [TestCase(-10.0)]
+        [TestCase(-30.0)]
+        public void GetsLowerBoundOfLowestNonZeroPieceWhenUpperBoundIsIncludedOnPieceBelowIt(double upperBound)
+        {
+            var function = new PiecewiseFunction { { upperBound - 10.0, 0.0 }, { upperBound, false, 1.0 }, { upperBound + 10, false, 1.0 } };
+
+            Assert.AreEqual(1.0, function.GetValue(function.LowestNonZeroPoint()));
+            Assert.Greater(function.LowestNonZeroPoint(), upperBound - 10.0);
         }
 
         [Test]

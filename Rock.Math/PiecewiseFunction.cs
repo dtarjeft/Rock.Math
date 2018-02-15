@@ -990,17 +990,36 @@
         /// <summary>
         /// Gets the highest X-value for which there is a non-zero Y-value, or double.NegativeInfinity if there is no non-zero Y-value.
         /// </summary>
+        /// <param name="tolerance">A factor for movement to the left if <see cref="Piece.IncludeUpperBound"/> is <c>false</c>. Cannot be less than zero.</param>
         /// <returns>An X-value.</returns>
-        public double HighestNonZeroPoint()
+        /// <remarks>If <see cref="Piece.IncludeUpperBound"/> is <c>false</c>, the returned X-Value will be shifted left according to the following rules:
+        /// If the piece has a piece to its left, return UpperBound shifted to the smaller of the following: .01% of the difference between those two Piece's Upper Bounds, or .01% of the Piece's Upper Bound.
+        /// If the piece has no piece to its left, shift left .01% of its Upper Bound.
+        /// </remarks>
+        public double HighestNonZeroPoint(double tolerance = .0001)
         {
             for (var i = this.Count - 1; i >= 0; i--)
             {
                 var piece = this[i];
 
-                if (!piece.Value.IsApproximatelyZero())
+                if (piece.Value.IsApproximatelyZero())
+                {
+                    continue;
+                }
+                if (piece.IncludeUpperBound)
                 {
                     return piece.UpperBound;
                 }
+                tolerance = Math.Abs(tolerance);
+                if (i == 0)
+                {
+                    if (piece.UpperBound.IsApproximatelyZero())
+                    {
+                        return 0 - tolerance;
+                    }
+                    return piece.UpperBound - Math.Abs(piece.UpperBound * tolerance);
+                }
+                return piece.UpperBound - Math.Abs(piece.UpperBound - this[i - 1].UpperBound) * tolerance;
             }
 
             return double.NaN;
@@ -1010,16 +1029,33 @@
         /// Gets the lowest X-value for which there is a non-zero Y-value, or double.PositiveInfinity if there is no non-zero Y-value.
         /// </summary>
         /// <returns>An X-value.</returns>
-        public double LowestNonZeroPoint()
+        public double LowestNonZeroPoint(double tolerance = .0001)
         {
             for (var i = 0; i < this.Count; i++)
             {
                 var piece = this[i];
 
-                if (!piece.Value.IsApproximatelyZero())
+                if (piece.Value.IsApproximatelyZero())
                 {
-                    return i == 0 ? double.MinValue : this[i - 1].UpperBound;
+                    continue;
                 }
+                if (i == 0)
+                {
+                    return double.MinValue;
+                }
+                var leftPiece = this[i - 1];
+                if (!leftPiece.IncludeUpperBound)
+                {
+                    return leftPiece.UpperBound;
+                }
+                tolerance = Math.Abs(tolerance); 
+                if (piece.UpperBound.ApproximatelyEquals(double.MaxValue))
+                {
+                    return leftPiece.UpperBound.IsApproximatelyZero()
+                        ? tolerance
+                        : leftPiece.UpperBound + Math.Abs(leftPiece.UpperBound * tolerance);
+                }
+                return leftPiece.UpperBound + Math.Abs(piece.UpperBound - leftPiece.UpperBound) * tolerance;
             }
 
             return double.NaN;
@@ -1029,7 +1065,7 @@
         /// Gets the highest X-value for which there is a zero Y-value, or double.NegativeInfinity if there is no zero Y-value.
         /// </summary>
         /// <returns>An X-value.</returns>
-        public double HighestZeroPoint()
+        public double HighestZeroPoint(double tolerance = .0001)
         {
             if (this.Count == 0)
             {
@@ -1046,12 +1082,25 @@
             {
                 var piece = this[i];
 
-                if (piece.Value.IsApproximatelyZero())
+                if (!piece.Value.IsApproximatelyZero())
+                {
+                    continue;
+                }
+                if (piece.IncludeUpperBound)
                 {
                     return piece.UpperBound;
                 }
+                tolerance = Math.Abs(tolerance);
+                if (i == 0)
+                {
+                    if (piece.UpperBound.IsApproximatelyZero())
+                    {
+                        return 0 - tolerance;
+                    }
+                    return piece.UpperBound - Math.Abs(piece.UpperBound * tolerance);
+                }
+                return piece.UpperBound - Math.Abs(piece.UpperBound - this[i - 1].UpperBound) * tolerance;
             }
-
             return double.NaN;
         }
 
@@ -1059,7 +1108,7 @@
         /// Gets the lowest X-value for which there is a zero Y-value, or double.PositiveInfinity if there is no zero Y-value.
         /// </summary>
         /// <returns>An X-value.</returns>
-        public double LowestZeroPoint()
+        public double LowestZeroPoint(double tolerance = .0001)
         {
             if (this.Count == 0)
             {
@@ -1070,10 +1119,27 @@
             {
                 var piece = this[i];
 
-                if (piece.Value.IsApproximatelyZero())
+                if (!piece.Value.IsApproximatelyZero())
                 {
-                    return i == 0 ? double.MinValue : this[i - 1].UpperBound;
+                    continue;
                 }
+                if (i == 0)
+                {
+                    return double.MinValue;
+                }
+                var leftPiece = this[i - 1];
+                if (!leftPiece.IncludeUpperBound)
+                {
+                    return leftPiece.UpperBound;
+                }
+                tolerance = Math.Abs(tolerance);
+                if (piece.UpperBound.ApproximatelyEquals(double.MaxValue))
+                {
+                    return leftPiece.UpperBound.IsApproximatelyZero()
+                        ? tolerance
+                        : leftPiece.UpperBound + Math.Abs(leftPiece.UpperBound * tolerance);
+                }
+                return leftPiece.UpperBound + Math.Abs(piece.UpperBound - leftPiece.UpperBound) * tolerance;
             }
 
             if (this[this.Count - 1].UpperBound < double.MaxValue ||
