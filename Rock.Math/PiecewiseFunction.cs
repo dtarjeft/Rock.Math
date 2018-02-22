@@ -12,6 +12,8 @@
     /// </summary>
     public class PiecewiseFunction : IReadOnlyList<PiecewiseFunction.Piece>
     {
+        public const double RangeTolerance = 1e-5;
+
         private readonly List<Piece> pieces;
 
         #region Helper Functions
@@ -897,6 +899,84 @@
             return 0;
         }
 
+        public double GetXOfLowestYInThresholdNearest(double inputX, double leftSeek = 0.0, double rightSeek = 0.0,
+            double yThreshold = double.MaxValue, double tolerance = RangeTolerance)
+        {
+            if (leftSeek.IsApproximatelyZero() && rightSeek.IsApproximatelyZero())
+            {
+                return inputX;
+            }
+            var resultX = inputX;
+            var resultY = this.GetValue(inputX); // We *do* loop twice over our set because of this, but we need the Y value for minY.
+            var minY = resultY - yThreshold;
+            var leftX = inputX - leftSeek;
+            var rightX = inputX + rightSeek;
+            for (var i = 0; i < this.Count; i++)
+            {
+                if (leftX > this[i].UpperBound)
+                {
+                    continue;
+                }
+                if (i != 0 && rightX < this[i - 1].UpperBound)
+                {
+                    continue;
+                }
+                if (this[i].Value > resultY || this[i].Value < minY)
+                {
+                    continue;
+                }
+                if (this[i].UpperBound < inputX) // left
+                {
+                    resultY = this[i].Value;
+                    if (this[i].IncludeUpperBound)
+                    {
+                        resultX = this[i].UpperBound;
+                    }
+                    else
+                    {
+                        resultX = i == 0
+                            ? this[i].UpperBound - Math.Abs(this[i].UpperBound) * tolerance
+                            : this[i].UpperBound -
+                              Math.Abs(this[i].UpperBound - this[i - 1].UpperBound) * tolerance;
+                    }
+                    continue;
+                }
+                if (i == 0) // inputX is in the first piece
+                {
+                    resultY = this[i].Value;
+                    continue;
+                }
+                if (this[i].UpperBound >= inputX) // right
+                {
+                    if (this[i-1].UpperBound <= inputX)
+                    {
+                        resultY = this[i].UpperBound;
+                        resultX = inputX; // lowest piece is at input, skip!
+                        continue;
+                    }
+                    // now need to handle moving away from the midpoint.
+                    if (this[i].Value.ApproximatelyEquals(resultY))
+                    {
+                        if (Math.Abs(this[i-1].UpperBound - inputX) >= Math.Abs(resultX - inputX))
+                        {
+                            continue; // Equivalent Y value.. but further away from the input X. Values greater than current resultY are caught above.
+                        }
+                    }
+                    if (!this[i-1].IncludeUpperBound)
+                    {
+                        resultX = this[i - 1].UpperBound;
+                    }
+                    else
+                    {
+                        resultX = this[i - 1].UpperBound +
+                                  Math.Abs(this[i - 1].UpperBound - this[i].UpperBound) * tolerance;
+                    }
+                }
+                
+            }
+            return resultX;
+        }
+
         /// <summary>
         /// Determines whether two piecewise functions have equal Y-values throughout.
         /// </summary>
@@ -996,7 +1076,7 @@
         /// If the piece has a piece to its left, return UpperBound shifted to the smaller of the following: .01% of the difference between those two Piece's Upper Bounds, or .01% of the Piece's Upper Bound.
         /// If the piece has no piece to its left, shift left .01% of its Upper Bound.
         /// </remarks>
-        public double HighestNonZeroPoint(double tolerance = .0001)
+        public double HighestNonZeroPoint(double tolerance = RangeTolerance)
         {
             for (var i = this.Count - 1; i >= 0; i--)
             {
@@ -1029,7 +1109,7 @@
         /// Gets the lowest X-value for which there is a non-zero Y-value, or double.PositiveInfinity if there is no non-zero Y-value.
         /// </summary>
         /// <returns>An X-value.</returns>
-        public double LowestNonZeroPoint(double tolerance = .0001)
+        public double LowestNonZeroPoint(double tolerance = RangeTolerance)
         {
             for (var i = 0; i < this.Count; i++)
             {
@@ -1065,7 +1145,7 @@
         /// Gets the highest X-value for which there is a zero Y-value, or double.NegativeInfinity if there is no zero Y-value.
         /// </summary>
         /// <returns>An X-value.</returns>
-        public double HighestZeroPoint(double tolerance = .0001)
+        public double HighestZeroPoint(double tolerance = RangeTolerance)
         {
             if (this.Count == 0)
             {
@@ -1108,7 +1188,7 @@
         /// Gets the lowest X-value for which there is a zero Y-value, or double.PositiveInfinity if there is no zero Y-value.
         /// </summary>
         /// <returns>An X-value.</returns>
-        public double LowestZeroPoint(double tolerance = .0001)
+        public double LowestZeroPoint(double tolerance = RangeTolerance)
         {
             if (this.Count == 0)
             {

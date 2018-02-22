@@ -2139,6 +2139,82 @@ namespace PiecewiseFunctionTests
     }
 
     [TestFixture]
+    public class GetXOfLowestYInThresholdNearest
+    {
+        [Test]
+        public void GetsInputXIfNoLowerY()
+        {
+            var function = new PiecewiseFunction { { 2, true, 0.5 }, { 3, true, 1 }, { 4, true, 0.5 }, { 5.0, false, 0.0 }, { 10.0, 2.0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(4.8, 3);
+            Assert.AreEqual(4.8, nearestToGivenX);
+        }
+
+        [Test]
+        public void GetsInputXIfNoLowerYInsideOfThreshold()
+        {
+            var function = new PiecewiseFunction { { 2, true, 0.1 }, { 3, true, 0.0 }, { 4, true, 0 }, { 5.0, false, 5.0 }, { 10.0, 0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(4.8, 3, 0, 4.8);
+            Assert.AreEqual(4.8, nearestToGivenX);
+        }
+
+        [Test]
+        public void GetsInputXIfEqualYInsideOfRange()
+        {
+            var function = new PiecewiseFunction { { 2, true, 0.5 }, { 3, true, 0.0 }, { 4, true, 0 }, { 5.0, false, 0.0 }, { 10.0, 0} };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(4.8, 3);
+            Assert.AreEqual(4.8, nearestToGivenX);
+        }
+        
+
+        [Test]
+        public void GetsXOfLowerYWhenInsideOfThreshold()
+        {
+            var function = new PiecewiseFunction { { 2, true, 0.2 }, { 3, true, 0.0 }, { 4, true, 0 }, { 5.0, false, 4.9 }, { 10.0, 0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(4.8, 3, 0, 4.8);
+            Assert.AreEqual(2, nearestToGivenX);
+        }
+
+
+        [Test]
+        public void GetsNearestToInputXOnLeft()
+        {
+            var function = new PiecewiseFunction { {2, true, 0.5},{3, true, 1},{4, true, 0.5}, { 5.0, false, 1.0 }, { 10.0, 2.0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(5, 3);
+            Assert.AreEqual(4, nearestToGivenX);
+        }
+        [Test]
+        public void GetsNearestToInputXOnLeftNoUpper()
+        {
+            var function = new PiecewiseFunction { { 2, true, 0.5 }, { 3, true, 1 }, { 4, false, 0.5 }, { 5.0, false, 1.0 }, { 10.0, 2.0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(5, 3);
+            Assert.Greater(4, nearestToGivenX);
+            Assert.Less(3.99, nearestToGivenX);
+        }
+        [Test]
+        public void GetsNearestToInputXOnSplit()
+        {
+            var function = new PiecewiseFunction { { 2, false, 0.5 }, { 3, false, 1 }, { 4, true, 0.5 }, { 5.0, false, 1.0 }, { 10.0, 2.0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(2.5, 2, 2);
+            Assert.AreEqual(3, nearestToGivenX);
+        }
+        [Test]
+        public void GetsNearestToInputXOnSplitPreferringLowerX()
+        {
+            var function = new PiecewiseFunction { { 2, true, 0.5 }, { 3, false, 1 }, { 4, true, 0.5 }};
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(3, 2, 2);
+            Assert.AreEqual(3, nearestToGivenX);
+        }
+        [Test]
+        public void GetsNearestToInputXOnRight()
+        {
+            var function = new PiecewiseFunction { { 2, false, 1 }, { 3, true, 0.5 }, { 4, true, 0.5 }, { 5.0, false, 1.0 }, { 10.0, 2.0 } };
+            var nearestToGivenX = function.GetXOfLowestYInThresholdNearest(1.99, 0, 3);
+            Assert.Less(3, nearestToGivenX);
+            Assert.Greater(3.01, nearestToGivenX);
+        }
+    }
+
+    [TestFixture]
     public class HighestZeroPoint
     {
         [Test]
